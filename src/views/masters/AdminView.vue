@@ -117,17 +117,32 @@ export default {
         }
     },
     methods: {
-        add(user) {
-            this.data.users.push(user)
+        async getUser() {
+            const response = await this.axios.get(`/users`);
+            if (response.status === 200) {
+                this.data.users = response.data;
+            }
         },
-        addUser() {
+        async getUserById(userId) {
+            const response = await this.axios.get(`/users/${userId}`);
+            if (response.status === 200) {
+                return response.data;
+            }
+
+            return null;
+        },
+        async addUser() {
             const user = {
-                id: 1,
                 username: this.inputs.username,
                 password: this.inputs.password,
             };
 
-            this.add(user)
+            const response = await this.axios.post(`/users`, user);
+            if (response.status === 200) {
+                this.getUser()
+            }
+
+
             this.data.modal.hide()
             this.inputs.username = '';
             this.inputs.password = '';
@@ -150,8 +165,9 @@ export default {
         formModal(userId) {
             this.data.userId = userId
             if (userId) {
-                this.inputs.username = this.data.users[0].username;
-                this.inputs.password = this.data.users[0].password;
+                const user = getUserById();
+                this.inputs.username = user.username;
+                this.inputs.password = user.password;
             }
             this.data.modal.show()
         },
@@ -162,6 +178,7 @@ export default {
     },
     mounted() {
         this.data.modal = new Modal(this.$refs.modal.$refs.modal)
+        this.getUser();
     }
 }
 </script>
