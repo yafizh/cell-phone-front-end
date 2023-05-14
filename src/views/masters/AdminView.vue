@@ -135,8 +135,5 @@ export default {
         this.data.modal = new Modal(this.$refs.modal.$refs.modal)
         this.loadData();
     },
-    watch(){
-
-    }
 }
 </script>
