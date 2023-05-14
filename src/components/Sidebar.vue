@@ -74,25 +74,26 @@
                 </a>
             </li>
 
-            <li class="menu-item">
+            <li class="menu-item"
+                :class="{ 'active open': (['admin', 'employee', 'item-type'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div data-i18n="Layouts">Data Utama</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <li class="menu-item">
-                        <router-link to="/admin" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'admin') }">
+                        <router-link :to="{ name: 'admin' }" class="menu-link">
                             <div data-i18n="Admin">Admin</div>
                         </router-link>
                     </li>
-                    <li class="menu-item">
-                        <router-link to="/employees" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'employee') }">
+                        <router-link :to="{ name: 'employee' }" class="menu-link">
                             <div data-i18n="Pegawai">Pegawai</div>
                         </router-link>
                     </li>
-                    <li class="menu-item">
-                        <router-link to="/item-types" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'item-type') }">
+                        <router-link :to="{ name: 'item-type' }" class="menu-link">
                             <div data-i18n="Jenis Barang">Jenis Barang</div>
                         </router-link>
                     </li>
@@ -186,6 +187,11 @@
 <script>
 import Menu from '@/assets/js/menu';
 export default {
+    computed: {
+        currentRouteName() {
+            return this.$route.name;
+        },
+    },
     mounted() {
         let menu, animate;
         let layoutMenuEl = document.querySelectorAll('#layout-menu');

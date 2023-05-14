@@ -7,17 +7,17 @@ import ItemTypeView from "../views/masters/ItemTypeView.vue";
 const routes = [
   {
     path: "/admin",
-    name: "admin.index",
+    name: "admin",
     component: AdminView,
   },
   {
     path: "/employees",
-    name: "employees.index",
+    name: "employee",
     component: EmployeeView,
   },
   {
     path: "/item-types",
-    name: "item-types.index",
+    name: "item-type",
     component: ItemTypeView,
   },
 ];
