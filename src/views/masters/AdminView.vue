@@ -1,84 +1,43 @@
 <template>
-    <section class="main_content dashboard_part">
-        <div class="main_content_iner">
-            <div class="container-fluid plr_30 body_white_bg pt_30">
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="QA_section">
-                            <div class="white_box_tittle list_header">
-                                <h4>Data Admin</h4>
-                                <div class="box_right d-flex lms_block">
-                                    <div class="serach_field_2">
-                                        <div class="search_inner">
-                                            <form Active="#">
-                                                <div class="search_field">
-                                                    <input type="text" placeholder="Search content here..." />
-                                                </div>
-                                                <button type="submit">
-                                                    <i class="ti-search"></i>
-                                                </button>
-                                            </form>
+    <div class="layout-page" style="padding-left: 16rem;">
+
+        <Navbar />
+
+        <div class="content-wrapper">
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold">Data Admin</h4>
+                    <button class="btn btn-primary align-self-start" @click="formModal(false)">Tambah</button>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 text-center">Username</th>
+                                    <th class="py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                <tr v-for="user in data.users" :key="user.id">
+                                    <td class="text-center">{{ user.username }}</td>
+                                    <td class="text-center td-fit">
+                                        <div class="d-flex gap-2">
+                                            <button @click="formModal(user.id)" class="btn btn-warning btn-sm">Edit</button>
+                                            <button @click="deleteUser(user.id)"
+                                                class="btn btn-danger btn-sm">Hapus</button>
                                         </div>
-                                    </div>
-                                    <div class="add_button ms-2">
-                                        <button type="button" class="btn_1" @click="formModal(null)">
-                                            Tambah Admin
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="QA_table mb-5">
-                                <table class="table lms_table_active">
-                                    <thead>
-                                        <tr>
-                                            <!-- <th scope="col" class="text-center td-fit">No</th> -->
-                                            <th scope="col" class="text-center">Username</th>
-                                            <th scope="col" class="text-center td-fit">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-if="!data.users.length">
-                                            <td colspan="3" class="text-center">Data Kosong</td>
-                                        </tr>
-                                        <tr v-for="user in data.users">
-                                            <!-- <td class="text-center td-fit">{{ user.no }}</td> -->
-                                            <td class="text-center">{{ user.username }}</td>
-                                            <td class="td-fit">
-                                                <button class="btn mx-1 btn-sm btn-secondary">Ganti Password</button>
-                                                <button class="btn mx-1 btn-sm btn-warning" @click="formModal(user.id)">
-                                                    Edit
-                                                </button>
-                                                <button class="btn mx-1 btn-sm btn-danger" @click="deleteUser(user.id)">
-                                                    Hapus
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- <div class="col-lg-12">
-                        <div class="white_box mb_30">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-end">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                    </li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <FormModal ref="modal">
         <form>
@@ -98,10 +57,20 @@
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
+import Navbar from '@/components/Navbar.vue';
+
+// API
+import getUser from '@/methods/api/index';
+import addUser from '@/methods/api/store';
+import editUser from '@/methods/api/update';
+import getUserById from '@/methods/api/show';
+import destroy from '@/methods/api/destroy';
+
 import { Modal } from 'bootstrap';
 export default {
     components: {
         FormModal,
+        Navbar,
     },
     data() {
         return {
@@ -113,72 +82,61 @@ export default {
             inputs: {
                 username: '',
                 password: ''
-            }
+            },
+            endpoint: 'admin'
         }
     },
     methods: {
-        async getUser() {
-            const response = await this.axios.get(`/users`);
-            if (response.status === 200) {
-                this.data.users = response.data;
-            }
+        getUser,
+        addUser,
+        editUser,
+        getUserById,
+        destroy,
+        async deleteUser(userId){
+            await this.destroy(this.endpoint, userId);
+            this.loadData();
         },
-        async getUserById(userId) {
-            const response = await this.axios.get(`/users/${userId}`);
-            if (response.status === 200) {
-                return response.data;
-            }
+        async formModal(userId) {
+            this.data.userId = null;
+            if (userId) {
+                this.data.userId = userId;
+                const response = await this.getUserById(this.endpoint, userId);
 
-            return null;
+                if (response.status === 200) {
+                    this.inputs.username = response.data.username;
+                    this.inputs.password = response.data.password;
+                }
+            }
+            this.data.modal.show();
         },
-        async addUser() {
-            const user = {
-                username: this.inputs.username,
-                password: this.inputs.password,
-            };
-
-            const response = await this.axios.post(`/users`, user);
-            if (response.status === 200) {
-                this.getUser()
+        async submitForm() {
+            if (this.data.userId) {
+                await this.editUser(this.endpoint, this.data.userId, {
+                    username: this.inputs.username,
+                    password: this.inputs.password,
+                });
+            } else {
+                await this.addUser(this.endpoint, {
+                    username: this.inputs.username,
+                    password: this.inputs.password,
+                });
             }
 
-
-            this.data.modal.hide()
+            this.loadData();
+            this.data.modal.hide();
             this.inputs.username = '';
             this.inputs.password = '';
         },
-        updateUser() {
-            const user = {
-                id: 1,
-                username: this.inputs.username,
-                password: this.inputs.password,
-            };
-
-            this.data.users[0] = user
-            this.data.modal.hide()
-            this.inputs.username = ''
-            this.inputs.password = ''
-        },
-        deleteUser(userId) {
-            this.data.users = [];
-        },
-        formModal(userId) {
-            this.data.userId = userId
-            if (userId) {
-                const user = getUserById();
-                this.inputs.username = user.username;
-                this.inputs.password = user.password;
-            }
-            this.data.modal.show()
-        },
-        submitForm() {
-            this.data.userId ? this.updateUser() : this.addUser()
+        async loadData() {
+            this.data.users = await this.getUser(this.endpoint);
         }
-
     },
-    mounted() {
+    async mounted() {
         this.data.modal = new Modal(this.$refs.modal.$refs.modal)
-        this.getUser();
+        this.loadData();
+    },
+    watch(){
+
     }
 }
 </script>
