@@ -66,7 +66,7 @@ import FormModal from '@/components/Modal.vue';
 import Navbar from '@/components/Navbar.vue';
 
 // API
-import getEmployee from '@/methods/api/index';
+import getEmployees from '@/methods/api/index';
 import addEmployee from '@/methods/api/store';
 import editEmployee from '@/methods/api/update';
 import getEmployeeById from '@/methods/api/show';
@@ -94,7 +94,7 @@ export default {
         }
     },
     methods: {
-        getEmployee,
+        getEmployees,
         addEmployee,
         editEmployee,
         getEmployeeById,
@@ -139,7 +139,7 @@ export default {
             this.inputs.password = '';
         },
         async loadData() {
-            this.data.employees = await this.getEmployee(this.endpoint);
+            this.data.employees = await this.getEmployees(this.endpoint);
         }
     },
     async mounted() {

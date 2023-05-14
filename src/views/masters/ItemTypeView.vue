@@ -1,96 +1,55 @@
 <template>
-    <section class="main_content dashboard_part">
-        <div class="main_content_iner">
-            <div class="container-fluid plr_30 body_white_bg pt_30">
-                <div class="row justify-content-center">
-                    <div class="col-12">
-                        <div class="QA_section">
-                            <div class="white_box_tittle list_header">
-                                <h4>Data Jenis Barang</h4>
-                                <div class="box_right d-flex lms_block">
-                                    <div class="serach_field_2">
-                                        <div class="search_inner">
-                                            <form Active="#">
-                                                <div class="search_field">
-                                                    <input type="text" placeholder="Search content here..." />
-                                                </div>
-                                                <button type="submit">
-                                                    <i class="ti-search"></i>
-                                                </button>
-                                            </form>
+    <div class="layout-page" style="padding-left: 16rem;">
+
+        <Navbar />
+
+        <div class="content-wrapper">
+
+            <div class="container-xxl flex-grow-1 container-p-y">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold">Data Jenis Barang</h4>
+                    <button class="btn btn-primary align-self-start" @click="formModal(false)">Tambah</button>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive text-nowrap">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th class="py-3 text-center">Nama Jenis Barang</th>
+                                    <th class="py-3 text-center">Urutan</th>
+                                    <th class="py-3 text-center">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody class="table-border-bottom-0">
+                                <tr v-for="itemType in data.itemTypes" :key="itemType.id">
+                                    <td class="text-center">{{ itemType.name }}</td>
+                                    <td class="text-center">{{ itemType.order }}</td>
+                                    <td class="text-center td-fit">
+                                        <div class="d-flex gap-2">
+                                            <button @click="formModal(itemType.id)" class="btn btn-warning btn-sm">Edit</button>
+                                            <button @click="deleteItemType(itemType.id)"
+                                                class="btn btn-danger btn-sm">Hapus</button>
                                         </div>
-                                    </div>
-                                    <div class="add_button ms-2">
-                                        <button type="button" class="btn_1" @click="formModal(null)">
-                                            Tambah Jenis Barang
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="QA_table mb-5">
-                                <table class="table lms_table_active">
-                                    <thead>
-                                        <tr>
-                                            <!-- <th scope="col" class="text-center td-fit">No</th> -->
-                                            <th scope="col" class="text-center">Jenis Barang</th>
-                                            <th scope="col" class="text-center">Posisi</th>
-                                            <th scope="col" class="text-center td-fit">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr v-if="!data.itemTypes.length">
-                                            <td colspan="3" class="text-center">Data Kosong</td>
-                                        </tr>
-                                        <tr v-for="itemType in data.itemTypes">
-                                            <!-- <td class="text-center td-fit">{{ itemType.no }}</td> -->
-                                            <td class="text-center">{{ itemType.name }}</td>
-                                            <td class="text-center">{{ itemType.username }}</td>
-                                            <td class="td-fit">
-                                                <button class="btn mx-1 btn-sm btn-warning" @click="formModal(itemType.id)">
-                                                    Edit
-                                                </button>
-                                                <button class="btn mx-1 btn-sm btn-danger"
-                                                    @click="deleteEmployee(itemType.id)">
-                                                    Hapus
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <!-- <div class="col-lg-12">
-                        <div class="white_box mb_30">
-                            <nav aria-label="Page navigation example">
-                                <ul class="pagination justify-content-end">
-                                    <li class="page-item disabled">
-                                        <a class="page-link" href="#" tabindex="-1" aria-disabled="true">Previous</a>
-                                    </li>
-                                    <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                    <li class="page-item">
-                                        <a class="page-link" href="#">Next</a>
-                                    </li>
-                                </ul>
-                            </nav>
-                        </div>
-                    </div> -->
                 </div>
             </div>
         </div>
-    </section>
+    </div>
 
     <FormModal ref="modal">
         <form>
             <div class="mb-3">
-                <label class="form-label">Jenis Barang</label>
+                <label class="form-label">Nama Jenis Barang</label>
                 <input type="text" v-model="inputs.name" class="form-control" required autocomplete="username">
             </div>
             <div class="mb-3">
-                <label class="form-label">Posisi</label>
-                <input type="text" v-model="inputs.position" class="form-control" required autocomplete="username">
+                <label class="form-label">Urutan</label>
+                <input type="number" v-model="inputs.order" class="form-control" required min="1">
             </div>
             <div class="mb-3">
                 <button @click.prevent="submitForm" class="btn btn-primary float-end">Submit</button>
@@ -100,10 +59,20 @@
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
+import Navbar from '@/components/Navbar.vue';
+
+// API
+import getItemTypes from '@/methods/api/index';
+import addItemType from '@/methods/api/store';
+import editItemType from '@/methods/api/update';
+import getItemTypeById from '@/methods/api/show';
+import destroy from '@/methods/api/destroy';
+
 import { Modal } from 'bootstrap';
 export default {
     components: {
         FormModal,
+        Navbar,
     },
     data() {
         return {
@@ -116,55 +85,58 @@ export default {
                 name: '',
                 username: '',
                 password: ''
-            }
+            },
+            endpoint: 'item-types'
         }
     },
     methods: {
-        add(itemType) {
-            this.data.itemTypes.push(itemType)
+        getItemTypes,
+        addItemType,
+        editItemType,
+        getItemTypeById,
+        destroy,
+        async deleteItemType(itemTypeId){
+            await this.destroy(this.endpoint, itemTypeId);
+            this.loadData();
         },
-        addEmployee() {
-            const itemType = {
-                id: 1,
-                name: this.inputs.name,
-                position: this.inputs.position,
-            };
-
-            this.add(itemType)
-            this.data.modal.hide()
-            this.inputs.name = '';
-            this.inputs.position = '';
-        },
-        updateItemType() {
-            const itemType = {
-                id: 1,
-                name: this.inputs.name,
-                position: this.inputs.position,
-            };
-
-            this.data.itemTypes[0] = itemType
-            this.data.modal.hide()
-            this.inputs.name = ''
-            this.inputs.position = ''
-        },
-        deleteItemType(itemTypeId) {
-            this.data.itemTypes = [];
-        },
-        formModal(itemTypeId) {
-            this.data.itemTypeId = itemTypeId
+        async formModal(itemTypeId) {
+            this.data.itemTypeId = null;
             if (itemTypeId) {
-                this.inputs.name = this.data.itemTypes[0].name;
-                this.inputs.position = this.data.itemTypes[0].position;
-            }
-            this.data.modal.show()
-        },
-        submitForm() {
-            this.data.itemTypeId ? this.updateItemType() : this.addItemType()
-        }
+                this.data.itemTypeId = itemTypeId;
+                const response = await this.getItemTypeById(this.endpoint, itemTypeId);
 
+                if (response.status === 200) {
+                    this.inputs.name = response.data.name;
+                    this.inputs.order = response.data.order;
+                }
+            }
+            this.data.modal.show();
+        },
+        async submitForm() {
+            if (this.data.itemTypeId) {
+                await this.editItemType(this.endpoint, this.data.itemTypeId, {
+                    name: this.inputs.name,
+                    order: this.inputs.order,
+                });
+            } else {
+                await this.addItemType(this.endpoint, {
+                    name: this.inputs.name,
+                    order: this.inputs.order,
+                });
+            }
+
+            this.loadData();
+            this.data.modal.hide();
+            this.inputs.name = '';
+            this.inputs.order = '';
+        },
+        async loadData() {
+            this.data.itemTypes = await this.getItemTypes(this.endpoint);
+        }
     },
-    mounted() {
+    async mounted() {
         this.data.modal = new Modal(this.$refs.modal.$refs.modal)
-    }
+        this.loadData();
+    },
 }
 </script>
