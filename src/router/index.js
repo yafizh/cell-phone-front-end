@@ -3,6 +3,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import AdminView from "../views/masters/AdminView.vue";
 import EmployeeView from "../views/masters/EmployeeView.vue";
 import ItemTypeView from "../views/masters/ItemTypeView.vue";
+import ItemView from "../views/items/ItemView.vue";
 
 const routes = [
   {
@@ -19,6 +20,11 @@ const routes = [
     path: "/item-types",
     name: "item-type",
     component: ItemTypeView,
+  },
+  {
+    path: "/items",
+    name: "item",
+    component: ItemView,
   },
 ];
 

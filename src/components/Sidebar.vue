@@ -99,24 +99,24 @@
                     </li>
                 </ul>
             </li>
-            <li class="menu-item">
+            <li class="menu-item" :class="{ 'active open': (['item', 'credit', 'topup'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div data-i18n="Layouts">Data Item</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <li class="menu-item">
-                        <router-link to="/" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'item') }">
+                        <router-link :to="{ name: 'item' }" class="menu-link">
                             <div data-i18n="Barang">Barang</div>
                         </router-link>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit') }">
                         <router-link to="/" class="menu-link">
                             <div data-i18n="Pulsa">Pulsa</div>
                         </router-link>
                     </li>
-                    <li class="menu-item">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup') }">
                         <router-link to="/" class="menu-link">
                             <div data-i18n="Top Up">Top Up</div>
                         </router-link>
