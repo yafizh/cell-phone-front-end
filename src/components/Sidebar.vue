@@ -112,7 +112,7 @@
                         </router-link>
                     </li>
                     <li class="menu-item" :class="{ active: (currentRouteName === 'credit') }">
-                        <router-link to="/" class="menu-link">
+                        <router-link :to="{ name: 'credit' }" class="menu-link">
                             <div data-i18n="Pulsa">Pulsa</div>
                         </router-link>
                     </li>
