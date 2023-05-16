@@ -5,6 +5,7 @@ import EmployeeView from "../views/masters/EmployeeView.vue";
 import ItemTypeView from "../views/masters/ItemTypeView.vue";
 import ItemView from "../views/items/ItemView.vue";
 import CreditView from "../views/credits/CreditView.vue";
+import TopupView from "../views/topup/TopupView.vue";
 
 const routes = [
   {
@@ -31,6 +32,11 @@ const routes = [
     path: "/credits",
     name: "credit",
     component: CreditView,
+  },
+  {
+    path: "/topups",
+    name: "topup",
+    component: TopupView,
   },
 ];
 

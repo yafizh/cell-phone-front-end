@@ -117,7 +117,7 @@
                         </router-link>
                     </li>
                     <li class="menu-item" :class="{ active: (currentRouteName === 'topup') }">
-                        <router-link to="/" class="menu-link">
+                        <router-link :to="{ name: 'topup' }" class="menu-link">
                             <div data-i18n="Top Up">Top Up</div>
                         </router-link>
                     </li>
