@@ -127,10 +127,10 @@
                 <span class="menu-header-text">Riwayat</span>
             </li>
             <li class="menu-item"
-                :class="{ 'active open': (['item.sale', 'credit.sale', 'topup.sale'].includes(currentRouteName)) }">
+                :class="{ 'active open': (['item.out', 'credit.out', 'topup.out'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Penjualan</div>
+                    <div data-i18n="Layouts">Barang Keluar</div>
                 </a>
 
                 <ul class="menu-sub">
@@ -139,48 +139,43 @@
                             <div data-i18n="Semua">Semua</div>
                         </router-link>
                     </li> -->
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'item.sale') }">
-                        <router-link :to="{ name: 'item.sale' }" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'item.out') }">
+                        <router-link :to="{ name: 'item.out' }" class="menu-link">
                             <div data-i18n="Barang">Barang</div>
                         </router-link>
                     </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit.sale') }">
-                        <router-link :to="{ name: 'credit.sale' }" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit.out') }">
+                        <router-link :to="{ name: 'credit.out' }" class="menu-link">
                             <div data-i18n="Pulsa">Pulsa</div>
                         </router-link>
                     </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.sale') }">
-                        <router-link :to="{ name: 'topup.sale' }" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.out') }">
+                        <router-link :to="{ name: 'topup.out' }" class="menu-link">
                             <div data-i18n="Top up">Top Up</div>
                         </router-link>
                     </li>
                 </ul>
             </li>
             <li class="menu-item"
-                :class="{ 'active open': (['item.supply', 'credit.supply', 'topup.supply'].includes(currentRouteName)) }">
+                :class="{ 'active open': (['item.in', 'credit.in', 'topup.in'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Penyuplaian</div>
+                    <div data-i18n="Layouts">Barang Masuk</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <!-- <li class="menu-item">
-                        <router-link to="/" class="menu-link">
-                            <div data-i18n="Semua">Semua</div>
-                        </router-link>
-                    </li> -->
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'item.supply') }">
-                        <router-link :to="{ name: 'item.supply' }" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'item.in') }">
+                        <router-link :to="{ name: 'item.in' }" class="menu-link">
                             <div data-i18n="Barang">Barang</div>
                         </router-link>
                     </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit.supply') }">
-                        <router-link :to="{ name: 'credit.supply' }" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit.in') }">
+                        <router-link :to="{ name: 'credit.in' }" class="menu-link">
                             <div data-i18n="Pulsa">Pulsa</div>
                         </router-link>
                     </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.supply') }">
-                        <router-link :to="{ name: 'topup.supply' }" class="menu-link">
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.in') }">
+                        <router-link :to="{ name: 'topup.in' }" class="menu-link">
                             <div data-i18n="Top up">Top Up</div>
                         </router-link>
                     </li>

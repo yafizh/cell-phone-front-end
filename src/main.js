@@ -6,6 +6,7 @@ import router from "./router";
 import axios from "./plugins/axios";
 import VueAxios from "vue-axios";
 
+import "@/assets/css/styles.css";
 import "@/assets/scss/boxicons.scss";
 import "@/assets/scss/core.scss";
 import "@/assets/scss/theme-default.scss";

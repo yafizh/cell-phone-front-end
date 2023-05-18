@@ -1,5 +1,5 @@
 <template>
-    <div class="layout-page" style="padding-left: 16rem;">
+    <div class="layout-page">
 
         <Navbar />
 

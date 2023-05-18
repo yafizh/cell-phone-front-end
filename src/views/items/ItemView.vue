@@ -1,5 +1,5 @@
 <template>
-    <div class="layout-page" style="padding-left: 16rem;">
+    <div class="layout-page">
 
         <Navbar />
 
@@ -44,10 +44,22 @@
                                                         <td class="text-center">{{ item.stock }}</td>
                                                         <td class="text-center td-fit">
                                                             <div class="d-flex gap-2">
+                                                                <button @click="itemIn(item)"
+                                                                    class="btn btn-info btn-sm">
+                                                                    Barang Masuk
+                                                                </button>
+                                                                <button @click="itemOut(item)"
+                                                                    class="btn btn-success btn-sm">
+                                                                    Barang Keluar
+                                                                </button>
                                                                 <button @click="formModal(item.id, item.item_type_id)"
-                                                                    class="btn btn-warning btn-sm">Edit</button>
+                                                                    class="btn btn-warning btn-sm">
+                                                                    Edit
+                                                                </button>
                                                                 <button @click="deleteItem(item.id, item.item_type_id)"
-                                                                    class="btn btn-danger btn-sm">Hapus</button>
+                                                                    class="btn btn-danger btn-sm">
+                                                                    Hapus
+                                                                </button>
                                                             </div>
                                                         </td>
                                                     </tr>
@@ -92,10 +104,15 @@
             </div>
         </form>
     </FormModal>
+
+    <ModalItemIn ref="modalItemIn" @loadData="loadData" />
+    <ModalItemOut ref="modalItemOut" @loadData="loadData" />
 </template>
 
 <script>
 import FormModal from '@/components/Modal.vue';
+import ModalItemIn from '@/components/modals/ItemIn.vue';
+import ModalItemOut from '@/components/modals/ItemOut.vue';
 import Navbar from '@/components/Navbar.vue';
 
 // API
@@ -110,6 +127,8 @@ export default {
     components: {
         FormModal,
         Navbar,
+        ModalItemIn,
+        ModalItemOut,
     },
     data() {
         return {
@@ -117,6 +136,8 @@ export default {
                 items: {},
                 item_types: [],
                 modal: null,
+                modalItemIn: null,
+                modalItemOut: null,
                 itemId: null,
                 itemTypeId: null,
             },
@@ -127,7 +148,10 @@ export default {
                 price_sell: '',
                 description: ''
             },
-            endpoint: 'items'
+            endpoint: {
+                item: 'items',
+                itemIn: 'item-in'
+            }
         }
     },
     methods: {
@@ -137,7 +161,7 @@ export default {
         getItemById,
         destroy,
         async deleteItem(itemId, itemTypeId) {
-            await this.destroy(this.endpoint, itemId);
+            await this.destroy(this.endpoint.item, itemId);
             this.loadData(itemTypeId);
         },
         async formModal(itemId, itemTypeId) {
@@ -147,7 +171,7 @@ export default {
                 this.data.itemId = itemId;
                 this.data.itemTypeId = itemTypeId;
 
-                const response = await this.getItemById(this.endpoint, itemId);
+                const response = await this.getItemById(this.endpoint.item, itemId);
 
                 if (response.status === 200) {
                     this.inputs.item_type_id = response.data.item_type_id;
@@ -162,7 +186,7 @@ export default {
         async submitForm() {
             let response = null;
             if (this.data.itemId) {
-                response = await this.editItem(this.endpoint, this.data.itemId, {
+                response = await this.editItem(this.endpoint.item, this.data.itemId, {
                     item_type_id: this.inputs.item_type_id,
                     name: this.inputs.name,
                     price_buy: this.inputs.price_buy,
@@ -174,7 +198,7 @@ export default {
                     this.loadData(this.data.itemTypeId);
                 }
             } else {
-                response = await this.addItem(this.endpoint, {
+                response = await this.addItem(this.endpoint.item, {
                     item_type_id: this.inputs.item_type_id,
                     name: this.inputs.name,
                     price_buy: this.inputs.price_buy,
@@ -193,13 +217,18 @@ export default {
             this.inputs.description = '';
         },
         async loadData(itemTypeId) {
-            this.data.items[itemTypeId] = await this.getData(this.endpoint, {
+            this.data.items[itemTypeId] = await this.getData(this.endpoint.item, {
                 item_type_id: itemTypeId
             });
         },
         async loadItemTypes() {
             this.data.item_types = await this.getData('item-types');
         },
+        async itemIn(item) {
+            this.$refs.modalItemIn.openModal(item);
+        }, async itemOut(item) {
+            this.$refs.modalItemOut.openModal(item);
+        }
     },
     async mounted() {
         this.data.modal = new Modal(this.$refs.modal.$refs.modal)

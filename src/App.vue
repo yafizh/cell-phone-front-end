@@ -1,5 +1,5 @@
 <template>
-<DashboardView />
+  <DashboardView />
 </template>
 
 <script>
