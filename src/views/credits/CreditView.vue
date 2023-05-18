@@ -31,9 +31,12 @@
                                             <h5 class="mb-0">Balance: {{ value.balance }}</h5>
                                         </div>
                                         <div class="col-12 col-md-8 d-flex justify-content-end gap-2">
-                                            <!-- <button class="btn btn-info btn-sm" @click="">Tambah Ballance</button> -->
-                                            <button class="btn btn-primary btn-sm"
-                                                @click="formModal(false, creditPrice.name, value.id)">Tambah</button>
+                                            <button class="btn btn-info btn-sm" @click="creditIn(value)">
+                                                Balance Masuk
+                                            </button>
+                                            <button class="btn btn-success btn-sm" @click="creditOut(value, creditPrice.data.creditPrices[value.id])">
+                                                Balance Keluar
+                                            </button>
                                             <button class="btn btn-warning btn-sm"
                                                 @click="formModal(value.id, credit.name)">
                                                 Edit
@@ -41,6 +44,11 @@
                                             <button class="btn btn-danger btn-sm"
                                                 @click="deleteData(value.id, credit.name)">
                                                 Hapus
+                                            </button>
+                                            |
+                                            <button class="btn btn-primary btn-sm"
+                                                @click="formModal(false, creditPrice.name, value.id)">
+                                                Tambah Daftar Harga
                                             </button>
                                         </div>
                                     </div>
@@ -118,9 +126,14 @@
             </div>
         </form>
     </FormModal>
+
+    <ModalCreditIn ref="modalCreditIn" @loadData="loadData" :name="credit.name" />
+    <ModalCreditOut ref="modalCreditOut" @loadData="loadData" :name="credit.name"  />
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
+import ModalCreditIn from '@/components/modals/CreditIn.vue';
+import ModalCreditOut from '@/components/modals/CreditOut.vue';
 import Navbar from '@/components/Navbar.vue';
 
 // API
@@ -135,6 +148,8 @@ export default {
     components: {
         FormModal,
         Navbar,
+        ModalCreditIn,
+        ModalCreditOut,
     },
     data() {
         return {
@@ -281,6 +296,12 @@ export default {
                 this.creditPrice.inputs.order = '';
                 return;
             }
+        },
+        async creditIn(credit) {
+            this.$refs.modalCreditIn.openModal(credit);
+        },
+        async creditOut(credit, creditPrices) {
+            this.$refs.modalCreditOut.openModal(credit, creditPrices);
         },
         async loadData(name, creditId = null) {
             if (name === this.credit.name) {

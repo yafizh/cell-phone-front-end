@@ -44,8 +44,7 @@
                                                         <td class="text-center">{{ item.stock }}</td>
                                                         <td class="text-center td-fit">
                                                             <div class="d-flex gap-2">
-                                                                <button @click="itemIn(item)"
-                                                                    class="btn btn-info btn-sm">
+                                                                <button @click="itemIn(item)" class="btn btn-info btn-sm">
                                                                     Barang Masuk
                                                                 </button>
                                                                 <button @click="itemOut(item)"
@@ -226,7 +225,8 @@ export default {
         },
         async itemIn(item) {
             this.$refs.modalItemIn.openModal(item);
-        }, async itemOut(item) {
+        },
+        async itemOut(item) {
             this.$refs.modalItemOut.openModal(item);
         }
     },

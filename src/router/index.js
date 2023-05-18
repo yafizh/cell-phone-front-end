@@ -7,6 +7,8 @@ import ItemView from "../views/items/ItemView.vue";
 import ItemInView from "../views/items/ItemInView.vue";
 import ItemOutView from "../views/items/ItemOutView.vue";
 import CreditView from "../views/credits/CreditView.vue";
+import CreditInView from "../views/credits/CreditInView.vue";
+import CreditOutView from "../views/credits/CreditOutView.vue";
 import TopupView from "../views/topup/TopupView.vue";
 
 const routes = [
@@ -53,12 +55,12 @@ const routes = [
   {
     path: "/credit-in",
     name: "credit.in",
-    component: '',
+    component: CreditInView,
   },
   {
     path: "/credit-out",
     name: "credit.out",
-    component: '',
+    component: CreditOutView,
   },
   {
     path: "/topup-in",
