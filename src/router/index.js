@@ -38,6 +38,36 @@ const routes = [
     name: "topup",
     component: TopupView,
   },
+  {
+    path: "/item-sale",
+    name: "item.sale",
+    component: '',
+  },
+  {
+    path: "/credit-sale",
+    name: "credit.sale",
+    component: '',
+  },
+  {
+    path: "/topup-sale",
+    name: "topup.sale",
+    component: '',
+  },
+  {
+    path: "/item-supply",
+    name: "item.supply",
+    component: '',
+  },
+  {
+    path: "/credit-supply",
+    name: "credit.supply",
+    component: '',
+  },
+  {
+    path: "/topup-supply",
+    name: "topup.supply",
+    component: '',
+  },
 ];
 
 const router = createRouter({
