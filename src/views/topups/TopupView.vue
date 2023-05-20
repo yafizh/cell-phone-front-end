@@ -31,7 +31,13 @@
                                             <h5 class="mb-0">Balance: {{ value.balance }}</h5>
                                         </div>
                                         <div class="col-12 col-md-8 d-flex justify-content-end gap-2">
-                                            <!-- <button class="btn btn-info btn-sm" @click="">Tambah Ballance</button> -->
+                                            <button class="btn btn-info btn-sm" @click="topupIn(value)">
+                                                Balance Masuk
+                                            </button>
+                                            <button class="btn btn-success btn-sm"
+                                                @click="topupOut(value, topupPrice.data.topupPrices[value.id])">
+                                                Balance Keluar
+                                            </button>
                                             <button class="btn btn-primary btn-sm"
                                                 @click="formModal(false, topupPrice.name, value.id)">Tambah</button>
                                             <button class="btn btn-warning btn-sm" @click="formModal(value.id, topup.name)">
@@ -39,6 +45,11 @@
                                             </button>
                                             <button class="btn btn-danger btn-sm" @click="deleteData(value.id, topup.name)">
                                                 Hapus
+                                            </button>
+                                            |
+                                            <button class="btn btn-primary btn-sm"
+                                                @click="formModal(false, topupPrice.name, value.id)">
+                                                Tambah Daftar Harga
                                             </button>
                                         </div>
                                     </div>
@@ -116,10 +127,15 @@
             </div>
         </form>
     </FormModal>
+
+    <ModalTopupIn ref="modalTopupIn" @loadData="loadData" :name="topup.name" />
+    <ModalTopupOut ref="modalTopupOut" @loadData="loadData" :name="topup.name" />
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
 import Navbar from '@/components/Navbar.vue';
+import ModalTopupIn from '@/components/modals/TopupIn.vue';
+import ModalTopupOut from '@/components/modals/TopupOut.vue';
 
 // API
 import getData from '@/methods/api/index';
@@ -133,6 +149,8 @@ export default {
     components: {
         FormModal,
         Navbar,
+        ModalTopupIn,
+        ModalTopupOut
     },
     data() {
         return {
@@ -280,6 +298,12 @@ export default {
                 this.topupPrice.inputs.order = '';
                 return;
             }
+        },
+        async topupIn(topup) {
+            this.$refs.modalTopupIn.openModal(topup);
+        },
+        async topupOut(topup, topupPrices) {
+            this.$refs.modalTopupOut.openModal(topup, topupPrices);
         },
         async loadData(name, topupId = null) {
             if (name === this.topup.name) {

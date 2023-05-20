@@ -9,7 +9,9 @@ import ItemOutView from "../views/items/ItemOutView.vue";
 import CreditView from "../views/credits/CreditView.vue";
 import CreditInView from "../views/credits/CreditInView.vue";
 import CreditOutView from "../views/credits/CreditOutView.vue";
-import TopupView from "../views/topup/TopupView.vue";
+import TopupView from "../views/topups/TopupView.vue";
+import TopupInView from "../views/topups/TopupInView.vue";
+import TopupOutView from "../views/topups/TopupOutView.vue";
 
 const routes = [
   {
@@ -65,12 +67,12 @@ const routes = [
   {
     path: "/topup-in",
     name: "topup.in",
-    component: '',
+    component: TopupInView,
   },
   {
     path: "/topup-out",
     name: "topup.out",
-    component: '',
+    component: TopupOutView,
   },
 ];
 
