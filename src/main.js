@@ -16,10 +16,17 @@ import Helpers from "@/assets/js/helpers";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 
+// vue3-easy-data-table
+import Vue3EasyDataTable from "vue3-easy-data-table";
+import "vue3-easy-data-table/dist/style.css";
+
 window.Helpers = Helpers;
 window.PerfectScrollbar = PerfectScrollbar;
 
 const app = createApp(App);
+
+app.component("EasyDataTable", Vue3EasyDataTable);
+
 app.use(VueAxios, axios);
 app.use(router);
 

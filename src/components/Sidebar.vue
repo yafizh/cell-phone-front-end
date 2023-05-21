@@ -65,7 +65,7 @@
 
         <ul class="menu-inner py-1">
             <li class="menu-header small text-uppercase">
-                <span class="menu-header-text">Menu</span>
+                <span class="menu-header-text">Data Master</span>
             </li>
             <li class="menu-item">
                 <a href="index.html" class="menu-link">
@@ -73,55 +73,27 @@
                     <div data-i18n="Analytics">Dashboard</div>
                 </a>
             </li>
-
-            <li class="menu-item"
-                :class="{ 'active open': (['admin', 'employee', 'item-type'].includes(currentRouteName)) }">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Data Utama</div>
-                </a>
-
-                <ul class="menu-sub">
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'admin') }">
-                        <router-link :to="{ name: 'admin' }" class="menu-link">
-                            <div data-i18n="Admin">Admin</div>
-                        </router-link>
-                    </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'employee') }">
-                        <router-link :to="{ name: 'employee' }" class="menu-link">
-                            <div data-i18n="Pegawai">Pegawai</div>
-                        </router-link>
-                    </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'item-type') }">
-                        <router-link :to="{ name: 'item-type' }" class="menu-link">
-                            <div data-i18n="Jenis Barang">Jenis Barang</div>
-                        </router-link>
-                    </li>
-                </ul>
+            <li class="menu-item" :class="{ active: (currentRouteName === 'item-type') }">
+                <router-link :to="{ name: 'item-type' }" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Jenis Barang">Jenis Barang</div>
+                </router-link>
             </li>
-            <li class="menu-item" :class="{ 'active open': (['item', 'credit', 'topup'].includes(currentRouteName)) }">
-                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                    <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Data Item</div>
-                </a>
 
-                <ul class="menu-sub">
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'item') }">
-                        <router-link :to="{ name: 'item' }" class="menu-link">
-                            <div data-i18n="Barang">Barang</div>
-                        </router-link>
-                    </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit') }">
-                        <router-link :to="{ name: 'credit' }" class="menu-link">
-                            <div data-i18n="Pulsa">Pulsa</div>
-                        </router-link>
-                    </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup') }">
-                        <router-link :to="{ name: 'topup' }" class="menu-link">
-                            <div data-i18n="Top Up">Top Up</div>
-                        </router-link>
-                    </li>
-                </ul>
+            <li class="menu-header small text-uppercase">
+                <span class="menu-header-text">Menu Utama</span>
+            </li>
+            <li class="menu-item" :class="{ active: (currentRouteName === 'item') }">
+                <router-link :to="{ name: 'item' }" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Barang">Barang</div>
+                </router-link>
+            </li>
+            <li class="menu-item" :class="{ active: (currentRouteName === 'balance') }">
+                <router-link :to="{ name: 'balance' }" class="menu-link">
+                    <i class="menu-icon tf-icons bx bx-home-circle"></i>
+                    <div data-i18n="Barang">Pulsa & Topup</div>
+                </router-link>
             </li>
             <li class="menu-header small text-uppercase">
                 <span class="menu-header-text">Riwayat</span>
@@ -130,15 +102,10 @@
                 :class="{ 'active open': (['item.out', 'credit.out', 'topup.out'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Barang Keluar</div>
+                    <div data-i18n="Layouts">Penjualan</div>
                 </a>
 
                 <ul class="menu-sub">
-                    <!-- <li class="menu-item">
-                        <router-link to="/" class="menu-link">
-                            <div data-i18n="Semua">Semua</div>
-                        </router-link>
-                    </li> -->
                     <li class="menu-item" :class="{ active: (currentRouteName === 'item.out') }">
                         <router-link :to="{ name: 'item.out' }" class="menu-link">
                             <div data-i18n="Barang">Barang</div>
@@ -149,18 +116,13 @@
                             <div data-i18n="Pulsa">Pulsa</div>
                         </router-link>
                     </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.out') }">
-                        <router-link :to="{ name: 'topup.out' }" class="menu-link">
-                            <div data-i18n="Top up">Top Up</div>
-                        </router-link>
-                    </li>
                 </ul>
             </li>
             <li class="menu-item"
                 :class="{ 'active open': (['item.in', 'credit.in', 'topup.in'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
-                    <div data-i18n="Layouts">Barang Masuk</div>
+                    <div data-i18n="Layouts">Pengeluaran</div>
                 </a>
 
                 <ul class="menu-sub">
@@ -169,14 +131,9 @@
                             <div data-i18n="Barang">Barang</div>
                         </router-link>
                     </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'credit.in') }">
-                        <router-link :to="{ name: 'credit.in' }" class="menu-link">
-                            <div data-i18n="Pulsa">Pulsa</div>
-                        </router-link>
-                    </li>
-                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.in') }">
-                        <router-link :to="{ name: 'topup.in' }" class="menu-link">
-                            <div data-i18n="Top up">Top Up</div>
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'balance.in') }">
+                        <router-link :to="{ name: 'balance.in' }" class="menu-link">
+                            <div data-i18n="Pulsa">Pulsa & Topup</div>
                         </router-link>
                     </li>
                 </ul>
