@@ -64,6 +64,7 @@ export default {
         editItemOut,
         getItemOutById,
         openModal(item, itemOutId = null) {
+
             if (itemOutId) {
                 this.data.itemOutId = itemOutId;
                 this.data.itemType = item.item_type;
@@ -75,7 +76,7 @@ export default {
                 this.data.itemTypeId = item.item_type_id;
                 this.data.itemType = item.item_type;
                 this.data.name = item.name;
-                this.data.priceSell = item.price_sell;
+                this.inputs.priceSell = item.price_sell;
             }
             this.modal.show();
         },
@@ -88,24 +89,26 @@ export default {
                         price_sell: this.inputs.priceSell,
                         count: this.inputs.count,
                     });
-                this.$emit('loadData');
             } else {
                 await this.addItemOut(
                     this.endpoint,
                     {
                         item_id: this.data.itemId,
-                        price_sell: this.data.priceSell,
+                        price_sell: this.inputs.priceSell,
                         count: this.inputs.count,
                     });
-                this.$emit('loadData', this.data.itemTypeId);
             }
 
-
+            this.$emit('loadData');
             this.modal.hide();
+        },
+        hiddenBsModal() {
+            this.inputs.count = 0;
         }
     },
     mounted() {
         this.modal = new Modal(this.$refs.modal);
+        this.$refs.modal.addEventListener('hidden.bs.modal', this.hiddenBsModal);
     }
 }
 </script>

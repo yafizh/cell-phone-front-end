@@ -80,29 +80,36 @@ export default {
             this.modal.show();
         },
         async submit() {
+            let resopnse = null;
             if (this.data.itemInId) {
-                await this.editItemIn(
+                resopnse = await this.editItemIn(
                     this.endpoint,
                     this.data.itemInId,
                     {
                         count: this.inputs.count,
                     });
-                this.$emit('loadData');
             } else {
-                await this.addItemIn(
+                resopnse = await this.addItemIn(
                     this.endpoint,
                     {
                         item_id: this.data.itemId,
                         price_buy: this.data.priceBuy,
                         count: this.inputs.count,
                     });
-                this.$emit('loadData', this.data.itemTypeId);
             }
+
+            console.log(resopnse)
+
+            this.$emit('loadData');
             this.modal.hide();
+        },
+        hiddenBsModal() {
+            this.inputs.count = 0;
         }
     },
     mounted() {
         this.modal = new Modal(this.$refs.modal);
+        this.$refs.modal.addEventListener('hidden.bs.modal', this.hiddenBsModal);
     }
 }
 </script>
