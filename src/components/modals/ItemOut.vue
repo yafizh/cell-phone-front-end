@@ -42,6 +42,8 @@ import editItemOut from '@/methods/api/update';
 import getItemOutById from '@/methods/api/show';
 
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast"],
     data() {
         return {
             data: {
@@ -81,22 +83,49 @@ export default {
             this.modal.show();
         },
         async submit() {
+            let response = null;
             if (this.data.itemOutId) {
-                await this.editItemOut(
+                response = await this.editItemOut(
                     this.endpoint,
                     this.data.itemOutId,
                     {
                         price_sell: this.inputs.priceSell,
                         count: this.inputs.count,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil memperbaharui barang terjual!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal memperbaharui barang terjual!'
+                    );
             } else {
-                await this.addItemOut(
+                response = await this.addItemOut(
                     this.endpoint,
                     {
                         item_id: this.data.itemId,
                         price_sell: this.inputs.priceSell,
                         count: this.inputs.count,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil menambah barang terjual!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal menambah barang terjual!'
+                    );
             }
 
             this.$emit('loadData');

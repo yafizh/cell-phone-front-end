@@ -116,7 +116,8 @@
         </template>
     </FormModal>
 
-    <ModalTopupOut ref="modalTopupOut" @loadBalance="loadBalance" :name="topup.name" />
+    <ModalTopupOut ref="modalTopupOut" @loadBalance="loadBalance" :name="topup.name" :toastStatus="toastStatus"
+        @pushToast="pushToast" />
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
@@ -131,6 +132,8 @@ import destroy from '@/methods/api/destroy';
 
 import { Modal } from 'bootstrap';
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast", 'loadBalance'],
     components: {
         FormModal,
         ModalTopupOut
@@ -173,18 +176,45 @@ export default {
         editData,
         getDataById,
         destroy,
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         loadBalance() {
             this.$emit('loadBalance');
         },
         async deleteData(id, name, topupId = null) {
             if (name === this.topup.name) {
-                await this.destroy(this.topup.endpoint, id);
+                const response = await this.destroy(this.topup.endpoint, id);
                 this.loadData(name);
+
+
+                if (response.data.success)
+                    this.pushToast(
+                        this.toastStatus.success,
+                        'Berhasil menghapus provider topup!'
+                    );
+                else
+                    this.pushToast(
+                        this.toastStatus.failed,
+                        'Gagal menghapus provider topup!'
+                    );
             }
 
             if (name === this.topupPrice.name && topupId) {
-                await this.destroy(this.topupPrice.endpoint, id);
+                const response = await this.destroy(this.topupPrice.endpoint, id);
                 this.loadData(name, topupId);
+
+
+                if (response.data.success)
+                    this.pushToast(
+                        this.toastStatus.success,
+                        'Berhasil menghapus daftar harga!'
+                    );
+                else
+                    this.pushToast(
+                        this.toastStatus.failed,
+                        'Gagal menghapus daftar harga!'
+                    );
             }
 
         },
@@ -234,6 +264,17 @@ export default {
                             order: this.topup.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil memperbaharui provider topup!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal memperbaharui provider topup!'
+                        );
                 } else {
                     response = await this.addData(
                         this.topup.endpoint,
@@ -243,6 +284,17 @@ export default {
                             order: this.topup.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil menambah provider topup!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal menambah provider topup!'
+                        );
                 }
 
                 this.loadData(name);
@@ -265,6 +317,17 @@ export default {
                             order: this.topupPrice.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil memperbaharui daftar harga!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal memperbaharui daftar harga!'
+                        );
                 } else {
                     response = await this.addData(
                         this.topupPrice.endpoint,
@@ -275,6 +338,17 @@ export default {
                             order: this.topupPrice.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil menambah daftar harga!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal menambah daftar harga!'
+                        );
                 }
 
                 this.loadData(name, this.topupPrice.inputs.topupId);

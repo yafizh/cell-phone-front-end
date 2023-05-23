@@ -43,7 +43,8 @@ import editCreditOut from '@/methods/api/update';
 import getCreditOutById from '@/methods/api/show';
 
 export default {
-    props: ['name', 'creditPrices'],
+    props: ['name', 'creditPrices', 'toastStatus'],
+    emits: ["pushToast", "loadData"],
     data() {
         return {
             data: {
@@ -90,6 +91,19 @@ export default {
                         price_sell: this.inputs.priceSell,
                         amount: this.inputs.amount,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil memperbaharui penjualan pulsa!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal memperbaharui penjualan pulsa!'
+                    );
                 this.$emit('loadData');
             } else {
                 response = await this.addCreditOut(
@@ -99,6 +113,19 @@ export default {
                         price_sell: this.inputs.priceSell,
                         amount: this.inputs.amount,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil menambah penjualan pulsa!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal menambah penjualan pulsa!'
+                    );
                 this.$emit('loadBalance');
             }
 

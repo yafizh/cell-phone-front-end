@@ -74,7 +74,7 @@
             </div>
         </div>
     </div>
-    <ModalItemIn ref="modalItemIn" @loadData="loadData" />
+    <ModalItemIn ref="modalItemIn" @loadData="loadData" :toast-status="toastStatus" @pushToast="pushToast" />
 </template>
 <script>
 import { ref } from 'vue';
@@ -91,6 +91,8 @@ import dataTableComputedProperties from "@/plugins/vue3_easy_data_table/computed
 import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast"],
     components: {
         Navbar,
         ModalItemIn
@@ -141,13 +143,26 @@ export default {
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';
         },
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         getItemIn,
         destroy,
         editItemIn(item, itemInId) {
             this.$refs.modalItemIn.openModal(item, itemInId);
         },
         async deleteItemIn(itemInId) {
-            await this.destroy(this.endpoint, itemInId);
+            const response = await this.destroy(this.endpoint, itemInId);
+            if (response.data.success)
+                this.pushToast(
+                    this.toastStatus.success,
+                    'Berhasil menghapus barang masuk!'
+                );
+            else
+                this.pushToast(
+                    this.toastStatus.failed,
+                    'Gagal menghapus barang masuk!'
+                );
             this.loadData();
         },
         async loadData() {

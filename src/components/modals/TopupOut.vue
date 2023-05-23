@@ -43,7 +43,8 @@ import editTopupOut from '@/methods/api/update';
 import getTopupOutById from '@/methods/api/show';
 
 export default {
-    props: ['name', 'topupPrices'],
+    props: ['name', 'topupPrices', 'toastStatus'],
+    emits: ["pushToast", "loadData"],
     data() {
         return {
             data: {
@@ -90,6 +91,19 @@ export default {
                         price_sell: this.inputs.priceSell,
                         amount: this.inputs.amount,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil memperbaharui penjualan topup!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal memperbaharui penjualan topup!'
+                    );
                 this.$emit('loadData');
             } else {
                 response = await this.addTopupOut(
@@ -99,6 +113,19 @@ export default {
                         price_sell: this.inputs.priceSell,
                         amount: this.inputs.amount,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil menambah penjualan topup!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal menambah penjualan topup!'
+                    );
                 this.$emit('loadBalance');
             }
 

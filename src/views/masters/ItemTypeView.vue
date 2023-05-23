@@ -115,6 +115,8 @@ import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
 import { Modal } from 'bootstrap';
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast"],
     components: {
         FormModal,
         Navbar,
@@ -171,7 +173,19 @@ export default {
         getItemTypeById,
         destroy,
         async deleteItemType(itemTypeId) {
-            await this.destroy(this.endpoint, itemTypeId);
+            const response = await this.destroy(this.endpoint, itemTypeId);
+            if (response.data.success)
+                this.$emit(
+                    'pushToast',
+                    this.toastStatus.success,
+                    'Jenis barang berhasil dihapus!'
+                );
+            else
+                this.$emit(
+                    'pushToast',
+                    this.toastStatus.failed,
+                    'Jenis barang gagal dihapus!'
+                );
             this.loadData();
         },
         async formModal(itemTypeId) {
@@ -188,16 +202,43 @@ export default {
             this.data.modal.show();
         },
         async submitForm() {
+            let response = null;
             if (this.data.itemTypeId) {
-                await this.editItemType(this.endpoint, this.data.itemTypeId, {
+                response = await this.editItemType(this.endpoint, this.data.itemTypeId, {
                     name: this.inputs.name,
                     order: this.inputs.order,
                 });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Jenis barang berhasil diperbaharui!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Jenis barang gagal diperbaharui!'
+                    );
             } else {
-                await this.addItemType(this.endpoint, {
+                response = await this.addItemType(this.endpoint, {
                     name: this.inputs.name,
                     order: this.inputs.order,
                 });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Jenis barang berhasil ditambah!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Jenis barang gagal ditambah!'
+                    );
             }
 
             this.loadData();

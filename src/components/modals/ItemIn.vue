@@ -42,6 +42,8 @@ import editItemIn from '@/methods/api/update';
 import getItemInById from '@/methods/api/show';
 
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast", "loadData"],
     data() {
         return {
             data: {
@@ -80,25 +82,49 @@ export default {
             this.modal.show();
         },
         async submit() {
-            let resopnse = null;
+            let response = null;
             if (this.data.itemInId) {
-                resopnse = await this.editItemIn(
+                response = await this.editItemIn(
                     this.endpoint,
                     this.data.itemInId,
                     {
                         count: this.inputs.count,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil memperbaharui barang masuk!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal memperbaharui barang masuk!'
+                    );
             } else {
-                resopnse = await this.addItemIn(
+                response = await this.addItemIn(
                     this.endpoint,
                     {
                         item_id: this.data.itemId,
                         price_buy: this.data.priceBuy,
                         count: this.inputs.count,
                     });
-            }
 
-            console.log(resopnse)
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil menambah barang masuk!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal menambah barang masuk!'
+                    );
+            }
 
             this.$emit('loadData');
             this.modal.hide();

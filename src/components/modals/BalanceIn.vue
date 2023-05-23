@@ -33,6 +33,8 @@ import addBalanceIn from '@/methods/api/store';
 import editBalanceIn from '@/methods/api/update';
 
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast", 'loadData'],
     data() {
         return {
             data: {
@@ -68,6 +70,19 @@ export default {
                         price_buy: this.inputs.priceBuy,
                         amount: this.inputs.amount,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil memperbaharui saldo!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal memperbaharui saldo!'
+                    );
             } else {
                 response = await this.addBalanceIn(
                     this.endpoint,
@@ -76,6 +91,19 @@ export default {
                         price_buy: this.inputs.priceBuy,
                         amount: this.inputs.amount,
                     });
+
+                if (response.data.success)
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.success,
+                        'Berhasil menambah saldo!'
+                    );
+                else
+                    this.$emit(
+                        'pushToast',
+                        this.toastStatus.failed,
+                        'Gagal menambah saldo!'
+                    );
             }
 
             this.$emit('loadData');

@@ -116,7 +116,8 @@
         </template>
     </FormModal>
 
-    <ModalCreditOut ref="modalCreditOut" @loadBalance="loadBalance" :name="credit.name" />
+    <ModalCreditOut ref="modalCreditOut" @loadBalance="loadBalance" :name="credit.name" :toastStatus="toastStatus"
+        @pushToast="pushToast" />
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
@@ -131,6 +132,8 @@ import destroy from '@/methods/api/destroy';
 
 import { Modal } from 'bootstrap';
 export default {
+    props: ['toastStatus'],
+    emits: ["pushToast", 'loadBalance'],
     components: {
         FormModal,
         ModalCreditOut,
@@ -173,18 +176,45 @@ export default {
         addData,
         editData,
         destroy,
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         loadBalance() {
             this.$emit('loadBalance');
         },
         async deleteData(id, name, creditId = null) {
             if (name === this.credit.name) {
-                await this.destroy(this.credit.endpoint, id);
+                const response = await this.destroy(this.credit.endpoint, id);
                 this.loadData(name);
+
+
+                if (response.data.success)
+                    this.pushToast(
+                        this.toastStatus.success,
+                        'Berhasil menghapus provider pulsa!'
+                    );
+                else
+                    this.pushToast(
+                        this.toastStatus.failed,
+                        'Gagal menghapus provider pulsa!'
+                    );
             }
 
             if (name === this.creditPrice.name && creditId) {
-                await this.destroy(this.creditPrice.endpoint, id);
+                const response = await this.destroy(this.creditPrice.endpoint, id);
                 this.loadData(name, creditId);
+
+
+                if (response.data.success)
+                    this.pushToast(
+                        this.toastStatus.success,
+                        'Berhasil menghapus daftar harga!'
+                    );
+                else
+                    this.pushToast(
+                        this.toastStatus.failed,
+                        'Gagal menghapus daftar harga!'
+                    );
             }
 
         },
@@ -234,6 +264,17 @@ export default {
                             order: this.credit.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil memperbaharui provider pulsa!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal memperbaharui provider pulsa!'
+                        );
                 } else {
                     response = await this.addData(
                         this.credit.endpoint,
@@ -243,9 +284,18 @@ export default {
                             order: this.credit.inputs.order,
                         }
                     );
-                }
 
-                console.log(response)
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil menambah provider pulsa!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal menambah provider pulsa!'
+                        );
+                }
 
                 this.loadData(name);
                 this.credit.data.modal.hide();
@@ -266,6 +316,17 @@ export default {
                             order: this.creditPrice.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil memperbaharui daftar harga!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal memperbaharui daftar harga!'
+                        );
                 } else {
                     response = await this.addData(
                         this.creditPrice.endpoint,
@@ -276,6 +337,17 @@ export default {
                             order: this.creditPrice.inputs.order,
                         }
                     );
+
+                    if (response.data.success)
+                        this.pushToast(
+                            this.toastStatus.success,
+                            'Berhasil menambah daftar harga!'
+                        );
+                    else
+                        this.pushToast(
+                            this.toastStatus.failed,
+                            'Gagal menambah daftar harga!'
+                        );
                 }
 
                 this.loadData(name, this.creditPrice.inputs.creditId);

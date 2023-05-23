@@ -96,8 +96,8 @@
         </template>
     </FormModal>
 
-    <ModalItemIn ref="modalItemIn" @loadData="loadData" />
-    <ModalItemOut ref="modalItemOut" @loadData="loadData" />
+    <ModalItemIn ref="modalItemIn" @loadData="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
+    <ModalItemOut ref="modalItemOut" @loadData="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
 </template>
 
 <script>
@@ -118,7 +118,7 @@ import destroy from '@/methods/api/destroy';
 import { Modal } from 'bootstrap';
 export default {
     props: ['toastStatus'],
-    emits: ["toastStatus", "pushToast"],
+    emits: ["pushToast"],
     components: {
         FormModal,
         Navbar,
@@ -181,8 +181,21 @@ export default {
         editItem,
         getItemById,
         destroy,
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         async deleteItem(itemId) {
-            await this.destroy(this.endpoint.item, itemId);
+            const response = await this.destroy(this.endpoint.item, itemId);
+            if (response.data.success)
+                this.pushToast(
+                    this.toastStatus.success,
+                    'Barang berhasil dihapus!'
+                );
+            else
+                this.pushToast(
+                    this.toastStatus.failed,
+                    'Barang gagal dihapus!'
+                );
             this.loadData(this.accordionActiveIndex);
         },
         async formModal(itemId, itemTypeId) {
@@ -218,7 +231,17 @@ export default {
                 if (this.data.itemTypeId != this.inputs.item_type_id) {
                     this.loadData(this.data.itemTypeId);
                 }
-                this.$emit('pushToast', this.toastStatus.success, 'Barang berhasil diperbaharui!');
+
+                if (response.data.success)
+                    this.pushToast(
+                        this.toastStatus.success,
+                        'Barang berhasil diperbaharui!'
+                    );
+                else
+                    this.pushToast(
+                        this.toastStatus.failed,
+                        'Barang gagal diperbaharui!'
+                    );
             } else {
                 response = await this.addItem(this.endpoint.item, {
                     item_type_id: this.inputs.item_type_id,
@@ -227,7 +250,17 @@ export default {
                     price_sell: this.inputs.price_sell,
                     description: this.inputs.description,
                 });
-                this.$emit('pushToast', this.toastStatus.success, 'Barang berhasil ditambah!');
+
+                if (response.data.success)
+                    this.pushToast(
+                        this.toastStatus.success,
+                        'Barang berhasil ditambah!'
+                    );
+                else
+                    this.pushToast(
+                        this.toastStatus.failed,
+                        'Barang gagal ditambah!'
+                    );
             }
 
             this.loadData(this.accordionActiveIndex);
@@ -239,8 +272,7 @@ export default {
         },
         async loadData(index) {
             this.accordionActiveIndex = index ?? this.accordionActiveIndex;
-
-            if (this.accordionActiveIndex) {
+            if (this.accordionActiveIndex >= 0) {
                 this.loading[this.accordionActiveIndex] = true;
                 const response = await this.getData(
                     this.endpoint.item,

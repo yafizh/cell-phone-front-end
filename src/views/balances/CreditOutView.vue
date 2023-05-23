@@ -78,7 +78,7 @@
         </div>
     </div>
 
-    <ModalCreditOut ref="modalCreditOut" @loadData="loadData" />
+    <ModalCreditOut ref="modalCreditOut" @loadData="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
 </template>
 <script>
 import { ref } from 'vue';
@@ -96,7 +96,7 @@ import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
 export default {
     props: ['toastStatus'],
-    emits: ["toastStatus", "pushToast"],
+    emits: ["pushToast"],
     components: {
         Navbar,
         ModalCreditOut
@@ -145,6 +145,9 @@ export default {
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';
         },
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         getCreditOut,
         destroy,
         editCreditOut(credit, creditPrices, creditOutId) {
@@ -159,7 +162,16 @@ export default {
         },
         async deleteCreditOut(creditOutId) {
             const response = await this.destroy(this.endpoint, creditOutId);
-            console.log(response)
+            if (response.data.success)
+                this.pushToast(
+                    this.toastStatus.success,
+                    'Berhasil menghapus penjualan pusla!'
+                );
+            else
+                this.pushToast(
+                    this.toastStatus.failed,
+                    'Gagal menghapus penjualan pusla!'
+                );
             this.loadData();
         },
         async loadData() {

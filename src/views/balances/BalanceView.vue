@@ -15,17 +15,17 @@
 
                 <div class="row">
                     <div class="col-12 col-md-6">
-                        <CreditView @loadBalance="loadData" />
+                        <CreditView @loadBalance="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
                     </div>
                     <div class="col-12 col-md-6">
-                        <TopupView @loadBalance="loadData" />
+                        <TopupView @loadBalance="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <ModalBalanceIn ref="modalBalanceIn" @loadData="loadData" />
+    <ModalBalanceIn ref="modalBalanceIn" @loadData="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
 </template>
 <script>
 import FormModal from '@/components/Modal.vue';
@@ -39,7 +39,7 @@ import getBalance from '@/methods/api/index';
 
 export default {
     props: ['toastStatus'],
-    emits: ["toastStatus", "pushToast"],
+    emits: ["pushToast"],
     components: {
         FormModal,
         Navbar,
@@ -62,6 +62,9 @@ export default {
     },
     methods: {
         getBalance,
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         async loadData() {
             this.data.balance = (await this.getBalance(this.endpoint))[0].balance;
             return;

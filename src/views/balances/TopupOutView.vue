@@ -9,8 +9,6 @@
                 <h4 class="fw-bold">Riwayat Penjualan Topup</h4>
 
                 <div class="card">
-
-
                     <div class="row px-3 pt-3">
                         <div
                             class="col-md-6 col-12 d-flex gap-2 align-items-center order-2 order-md-1 mb-3 justify-content-center justify-content-md-start">
@@ -79,7 +77,7 @@
         </div>
     </div>
 
-    <ModalTopupOut ref="modalTopupOut" @loadData="loadData" />
+    <ModalTopupOut ref="modalTopupOut" @loadData="loadData" :toastStatus="toastStatus" @pushToast="pushToast" />
 </template>
 <script>
 import { ref } from 'vue';
@@ -97,7 +95,7 @@ import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
 export default {
     props: ['toastStatus'],
-    emits: ["toastStatus", "pushToast"],
+    emits: ["pushToast"],
     components: {
         Navbar,
         ModalTopupOut
@@ -148,6 +146,9 @@ export default {
         },
         getTopupOut,
         destroy,
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         editTopupOut(topup, topupPrices, topupOutId) {
             const isExist = topupPrices.filter(topupPrice => topupPrice.amount == topup.amount && topupPrice.price == topup.price_sell)
             if (!isExist.length) {
@@ -159,7 +160,17 @@ export default {
             this.$refs.modalTopupOut.openModal(topup, topupPrices, topupOutId);
         },
         async deleteTopupOut(topupOutId) {
-            await this.destroy(this.endpoint, topupOutId);
+            const response = await this.destroy(this.endpoint, topupOutId);
+            if (response.data.success)
+                this.pushToast(
+                    this.toastStatus.success,
+                    'Berhasil menghapus penjualan topup!'
+                );
+            else
+                this.pushToast(
+                    this.toastStatus.failed,
+                    'Gagal menghapus penjualan topup!'
+                );
             this.loadData();
         },
         async loadData() {

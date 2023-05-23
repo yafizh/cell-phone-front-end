@@ -76,7 +76,7 @@
         </div>
     </div>
 
-    <ModalBalanceIn ref="modalBalanceIn" @loadData="loadData" />
+    <ModalBalanceIn ref="modalBalanceIn" @loadData="loadData" :toast-status="toastStatus" @pushToast="pushToast" />
 </template>
 <script>
 import { ref } from 'vue';
@@ -94,7 +94,7 @@ import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
 export default {
     props: ['toastStatus'],
-    emits: ["toastStatus", "pushToast"],
+    emits: ["pushToast"],
     components: {
         Navbar,
         ModalBalanceIn
@@ -143,13 +143,26 @@ export default {
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';
         },
+        pushToast(status, message) {
+            this.$emit('pushToast', status, message);
+        },
         getBalanceIn,
         destroy,
         editBalanceIn(balanceIn) {
             this.$refs.modalBalanceIn.openModal(balanceIn);
         },
         async deleteBalanceIn(balanceInId) {
-            await this.destroy(this.endpoint, balanceInId);
+            const response = await this.destroy(this.endpoint, balanceInId);
+            if (response.data.success)
+                this.pushToast(
+                    this.toastStatus.success,
+                    'Berhasil menghapus saldo masuk!'
+                );
+            else
+                this.pushToast(
+                    this.toastStatus.failed,
+                    'Gagal menghapus saldo masuk!'
+                );
             this.loadData();
         },
         async loadData() {
