@@ -3,15 +3,11 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="formModalLabel">Topup Masuk</h1>
+                    <h1 class="modal-title fs-5" id="formModalLabel">Tambah Saldo</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form>
-                        <div class="mb-3">
-                            <label class="form-label">Nama Provider</label>
-                            <input type="text" v-model="data.name" class="form-control" disabled>
-                        </div>
                         <div class="mb-3">
                             <label class="form-label">Harga Beli</label>
                             <input type="number" v-model="inputs.priceBuy" class="form-control" required>
@@ -33,75 +29,67 @@
 import { Modal } from 'bootstrap';
 
 // API
-import addTopupIn from '@/methods/api/store';
-import editTopupIn from '@/methods/api/update';
-import getTopupInById from '@/methods/api/show';
+import addBalanceIn from '@/methods/api/store';
+import editBalanceIn from '@/methods/api/update';
 
 export default {
-    props: ['name'],
     data() {
         return {
             data: {
-                topupInId: null,
-                topupId: null,
-                name: '',
+                balanceInId: null,
             },
             inputs: {
                 amount: 0,
                 priceBuy: 0,
             },
             modal: null,
-            endpoint: 'topup-in'
+            endpoint: 'balance-in'
         }
     },
     methods: {
-        addTopupIn,
-        editTopupIn,
-        getTopupInById,
-        openModal(topup, topupInId = null) {
-            if (topupInId) {
-                this.data.topupInId = topupInId;
-                this.data.name = topup.topup_name;
-                this.inputs.priceBuy = topup.price_buy;
-                this.inputs.amount = topup.amount;
-            } else {
-                this.data.topupId = topup.id;
-                this.data.name = topup.name;
+        addBalanceIn,
+        editBalanceIn,
+        openModal(balanceIn = null) {
+            if (balanceIn) {
+                this.data.balanceInId = balanceIn.id;
+                this.inputs.priceBuy = balanceIn.price_buy;
+                this.inputs.amount = balanceIn.amount;
             }
             this.modal.show();
         },
         async submit() {
             let response = null;
-            if (this.data.topupInId) {
-                response = await this.editTopupIn(
+            if (this.data.balanceInId) {
+                response = await this.editBalanceIn(
                     this.endpoint,
-                    this.data.topupInId,
+                    this.data.balanceInId,
                     {
+                        balance_id: 1,
                         price_buy: this.inputs.priceBuy,
                         amount: this.inputs.amount,
                     });
-                this.$emit('loadData');
             } else {
-                response = await this.addTopupIn(
+                response = await this.addBalanceIn(
                     this.endpoint,
                     {
-                        topup_id: this.data.topupId,
+                        balance_id: 1,
                         price_buy: this.inputs.priceBuy,
                         amount: this.inputs.amount,
                     });
-                this.$emit('loadData', this.name);
             }
 
-            console.log(response)
+            this.$emit('loadData');
             this.modal.hide();
         },
         hiddenBsModal() {
+            this.data.balanceInId = null;
             this.inputs.priceBuy = 0;
             this.inputs.amount = 0;
         }
     },
     mounted() {
         this.modal = new Modal(this.$refs.modal);
+        console.log()
         this.$refs.modal.addEventListener('hidden.bs.modal', this.hiddenBsModal);
     }
 }

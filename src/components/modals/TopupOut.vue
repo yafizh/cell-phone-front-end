@@ -22,7 +22,7 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Jumlah</label>
+                            <label class="form-label">Saldo</label>
                             <input type="number" v-model="inputs.amount" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
@@ -99,12 +99,16 @@ export default {
                         price_sell: this.inputs.priceSell,
                         amount: this.inputs.amount,
                     });
-                this.$emit('loadData', this.name);
+                this.$emit('loadBalance');
             }
 
             this.modal.hide();
         },
         hiddenBsModal() {
+            this.data.topupOutId = null;
+            this.data.topupId = null;
+            this.data.name = '';
+            this.data.topupPrices = [];
             this.inputs.priceSell = 0;
             this.inputs.amount = 0;
         }

@@ -6,12 +6,10 @@ import ItemTypeView from "../views/masters/ItemTypeView.vue";
 import ItemView from "../views/items/ItemView.vue";
 import ItemInView from "../views/items/ItemInView.vue";
 import ItemOutView from "../views/items/ItemOutView.vue";
-import CreditView from "../views/credits/CreditView.vue";
-import CreditInView from "../views/credits/CreditInView.vue";
-import CreditOutView from "../views/credits/CreditOutView.vue";
-import TopupView from "../views/topups/TopupView.vue";
-import TopupInView from "../views/topups/TopupInView.vue";
-import TopupOutView from "../views/topups/TopupOutView.vue";
+import BalanceView from "../views/balances/BalanceView.vue";
+import BalanceInView from "../views/balances/BalanceInView.vue";
+import CreditOutView from "../views/balances/CreditOutView.vue";
+import TopupOutView from "../views/balances/TopupOutView.vue";
 
 const routes = [
   {
@@ -35,16 +33,6 @@ const routes = [
     component: ItemView,
   },
   {
-    path: "/credits",
-    name: "credit",
-    component: CreditView,
-  },
-  {
-    path: "/topups",
-    name: "topup",
-    component: TopupView,
-  },
-  {
     path: "/item-in",
     name: "item.in",
     component: ItemInView,
@@ -55,19 +43,19 @@ const routes = [
     component: ItemOutView,
   },
   {
-    path: "/credit-in",
-    name: "credit.in",
-    component: CreditInView,
+    path: "/balances",
+    name: "balance",
+    component: BalanceView,
+  },
+  {
+    path: "/balance-in",
+    name: "balance.in",
+    component: BalanceInView,
   },
   {
     path: "/credit-out",
     name: "credit.out",
     component: CreditOutView,
-  },
-  {
-    path: "/topup-in",
-    name: "topup.in",
-    component: TopupInView,
   },
   {
     path: "/topup-out",

@@ -116,10 +116,14 @@
                             <div data-i18n="Pulsa">Pulsa</div>
                         </router-link>
                     </li>
+                    <li class="menu-item" :class="{ active: (currentRouteName === 'topup.out') }">
+                        <router-link :to="{ name: 'topup.out' }" class="menu-link">
+                            <div data-i18n="Topup">Topup</div>
+                        </router-link>
+                    </li>
                 </ul>
             </li>
-            <li class="menu-item"
-                :class="{ 'active open': (['item.in', 'credit.in', 'topup.in'].includes(currentRouteName)) }">
+            <li class="menu-item" :class="{ 'active open': (['item.in', 'balance.in'].includes(currentRouteName)) }">
                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                     <i class="menu-icon tf-icons bx bx-layout"></i>
                     <div data-i18n="Layouts">Pengeluaran</div>

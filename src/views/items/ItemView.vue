@@ -117,6 +117,8 @@ import destroy from '@/methods/api/destroy';
 
 import { Modal } from 'bootstrap';
 export default {
+    props: ['toastStatus'],
+    emits: ["toastStatus", "pushToast"],
     components: {
         FormModal,
         Navbar,
@@ -216,6 +218,7 @@ export default {
                 if (this.data.itemTypeId != this.inputs.item_type_id) {
                     this.loadData(this.data.itemTypeId);
                 }
+                this.$emit('pushToast', this.toastStatus.success, 'Barang berhasil diperbaharui!');
             } else {
                 response = await this.addItem(this.endpoint.item, {
                     item_type_id: this.inputs.item_type_id,
@@ -224,9 +227,8 @@ export default {
                     price_sell: this.inputs.price_sell,
                     description: this.inputs.description,
                 });
+                this.$emit('pushToast', this.toastStatus.success, 'Barang berhasil ditambah!');
             }
-
-            console.log(response);
 
             this.loadData(this.accordionActiveIndex);
             this.data.modal.hide();
@@ -237,15 +239,18 @@ export default {
         },
         async loadData(index) {
             this.accordionActiveIndex = index ?? this.accordionActiveIndex;
-            this.loading[this.accordionActiveIndex] = true;
-            const response = await this.getData(
-                this.endpoint.item,
-                { item_type_id: this.data.item_types[this.accordionActiveIndex].id },
-                this.serverOptions[this.accordionActiveIndex]
-            );
-            this.data.items[this.accordionActiveIndex] = response.items;
-            this.data.itemsLength[this.accordionActiveIndex] = response.itemsLength;
-            this.loading[this.accordionActiveIndex] = false;
+
+            if (this.accordionActiveIndex) {
+                this.loading[this.accordionActiveIndex] = true;
+                const response = await this.getData(
+                    this.endpoint.item,
+                    { item_type_id: this.data.item_types[this.accordionActiveIndex].id },
+                    this.serverOptions[this.accordionActiveIndex]
+                );
+                this.data.items[this.accordionActiveIndex] = response.items;
+                this.data.itemsLength[this.accordionActiveIndex] = response.itemsLength;
+                this.loading[this.accordionActiveIndex] = false;
+            }
         },
         async loadItemTypes() {
             this.data.item_types = await this.getData('item-types');

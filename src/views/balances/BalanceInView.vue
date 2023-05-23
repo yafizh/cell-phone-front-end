@@ -6,7 +6,8 @@
         <div class="content-wrapper">
 
             <div class="container-xxl flex-grow-1 container-p-y">
-                <h4 class="fw-bold">Riwayat Barang Masuk</h4>
+                <h4 class="fw-bold">Riwayat Saldo Masuk</h4>
+
                 <div class="card">
                     <div class="row px-3 pt-3">
                         <div
@@ -24,17 +25,17 @@
                     </div>
 
                     <EasyDataTable :theme-color="'#12345'" table-class-name="customize-table mb-3"
-                        v-model:server-options="serverOptions" :headers="headers" :items="data.itemIn" :loading="loading"
+                        v-model:server-options="serverOptions" :headers="headers" :items="data.balanceIn" :loading="loading"
                         :server-items-length="data.itemsLength" buttons-pagination show-index
                         :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
                         header-text-direction="center" hide-footer ref="dataTable" :search-value="inputs.keyword">
 
-                        <template #item-action="itemIn">
+                        <template #item-action="balanceIn">
                             <div class="d-flex gap-2">
-                                <button @click="editItemIn(itemIn, itemIn.id)" class="btn btn-warning btn-sm">
+                                <button @click="editBalanceIn(balanceIn)" class="btn btn-warning btn-sm">
                                     Edit
                                 </button>
-                                <button @click="deleteItemIn(itemIn.id)" class="btn btn-danger btn-sm">
+                                <button @click="deleteBalanceIn(balanceIn.id)" class="btn btn-danger btn-sm">
                                     Hapus
                                 </button>
                             </div>
@@ -74,16 +75,17 @@
             </div>
         </div>
     </div>
-    <ModalItemIn ref="modalItemIn" @loadData="loadData" />
+
+    <ModalBalanceIn ref="modalBalanceIn" @loadData="loadData" />
 </template>
 <script>
 import { ref } from 'vue';
 
 import Navbar from '@/components/Navbar.vue';
-import ModalItemIn from '@/components/modals/ItemIn.vue';
+import ModalBalanceIn from '@/components/modals/BalanceIn.vue';
 
 // API
-import getItemIn from '@/methods/api/index';
+import getBalanceIn from '@/methods/api/index';
 import destroy from '@/methods/api/destroy';
 
 // vue3 easy data table
@@ -91,17 +93,17 @@ import dataTableComputedProperties from "@/plugins/vue3_easy_data_table/computed
 import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
 export default {
+    props: ['toastStatus'],
+    emits: ["toastStatus", "pushToast"],
     components: {
         Navbar,
-        ModalItemIn
+        ModalBalanceIn
     },
     setup() {
         const headers = [
             { text: "Tanggal", value: "in_date", sortable: true },
-            { text: "Jenis Barang", value: "item_type", sortable: true },
-            { text: "Nama Barang", value: "item_name", sortable: true },
             { text: "Harga Modal", value: "price_buy", sortable: true },
-            { text: "Jumlah", value: "count", sortable: true },
+            { text: "Jumlah", value: "amount", sortable: true },
             { text: "Aksi", value: "action" }
         ];
 
@@ -118,13 +120,13 @@ export default {
     data() {
         return {
             data: {
-                itemIn: [],
+                balanceIn: [],
                 itemsLength: 0,
             },
             inputs: {
                 keyword: '',
             },
-            endpoint: 'item-in',
+            endpoint: 'balance-in',
             loading: false,
             isMounted: false
         }
@@ -135,25 +137,25 @@ export default {
     methods: {
         ...dataTableMethods,
         bodyItemClass(column, index) {
-            if (['price_buy'].includes(column)) return 'text-end';
-            if (['index', 'in_date', 'item_type', 'name', 'count'].includes(column)) return 'text-center';
+            if (['price_buy', 'amount'].includes(column)) return 'text-end';
+            if (['index', 'in_date'].includes(column)) return 'text-center';
         },
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';
         },
-        getItemIn,
+        getBalanceIn,
         destroy,
-        editItemIn(item, itemInId) {
-            this.$refs.modalItemIn.openModal(item, itemInId);
+        editBalanceIn(balanceIn) {
+            this.$refs.modalBalanceIn.openModal(balanceIn);
         },
-        async deleteItemIn(itemInId) {
-            await this.destroy(this.endpoint, itemInId);
+        async deleteBalanceIn(balanceInId) {
+            await this.destroy(this.endpoint, balanceInId);
             this.loadData();
         },
         async loadData() {
             this.loading = true;
-            const response = await this.getItemIn(this.endpoint, {}, this.serverOptions);
-            this.data.itemIn = response.items;
+            const response = await this.getBalanceIn(this.endpoint, {}, this.serverOptions);
+            this.data.balanceIn = response.items;
             this.data.itemsLength = response.itemsLength;
             this.loading = false;
         }
