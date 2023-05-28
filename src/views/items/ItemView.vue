@@ -1,6 +1,14 @@
 <template>
     <div class="layout-page">
-        <Navbar />
+        <Navbar>
+            <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search fs-4 lh-0"></i>
+                    <input type="text" v-model="inputs.keyword" @input="search" class="form-control border-0 shadow-none"
+                        placeholder="Nama Barang..." />
+                </div>
+            </div>
+        </Navbar>
 
         <div class="content-wrapper">
 
@@ -30,7 +38,8 @@
                                             :items="data.items[index]" :loading="loading[index]"
                                             :server-items-length="data.itemsLength[index]" buttons-pagination show-index
                                             :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
-                                            header-text-direction="center" hide-footer ref="dataTable">
+                                            header-text-direction="center" hide-footer ref="dataTable"
+                                            :search-value="inputs.keyword">
 
                                             <template #item-price_buy="item">
                                                 {{ numberWithDot(item.price_buy) }}
@@ -95,7 +104,8 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Harga Jual</label>
-                    <input ref="priceSell" type="text" @keydown.prevent="inputPriceSell" :value="priceSell" class="form-control" required>
+                    <input ref="priceSell" type="text" @keydown.prevent="inputPriceSell" :value="priceSell"
+                        class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <button ref="submit" @click.prevent="submitForm" class="btn btn-primary float-end">Submit</button>
@@ -170,7 +180,8 @@ export default {
                 name: '',
                 price_buy: '',
                 price_sell: '',
-                description: ''
+                description: '',
+                keyword: ''
             },
             endpoint: {
                 item: 'items',
@@ -190,12 +201,12 @@ export default {
     },
     methods: {
         inputPriceBuy(event) {
-            if(event.which == 9) {
+            if (event.which == 9) {
                 this.$refs.priceSell.focus();
                 return;
             }
 
-            if(event.which == 13){
+            if (event.which == 13) {
                 this.submitForm();
                 return;
             }
@@ -216,7 +227,7 @@ export default {
             this.inputs.price_buy += event.key;
         },
         inputPriceSell(event) {
-            if(event.which == 13){
+            if (event.which == 13) {
                 this.submitForm();
                 return;
             }
@@ -249,6 +260,9 @@ export default {
         destroy,
         pushToast(status, message) {
             this.$emit('pushToast', status, message);
+        },
+        search() {
+            this.loadData();
         },
         async deleteItem(itemId) {
             const response = await this.destroy(this.endpoint.item, itemId);
@@ -342,7 +356,10 @@ export default {
                 this.loading[this.accordionActiveIndex] = true;
                 const response = await this.getData(
                     this.endpoint.item,
-                    { item_type_id: this.data.item_types[this.accordionActiveIndex].id },
+                    {
+                        item_type_id: this.data.item_types[this.accordionActiveIndex].id,
+                        keyword: this.inputs.keyword
+                    },
                     this.serverOptions[this.accordionActiveIndex]
                 );
                 this.data.items[this.accordionActiveIndex] = response.items;

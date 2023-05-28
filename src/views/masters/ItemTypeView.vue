@@ -1,7 +1,15 @@
 <template>
     <div class="layout-page">
 
-        <Navbar />
+        <Navbar>
+            <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search fs-4 lh-0"></i>
+                    <input type="text" v-model="inputs.keyword" @input="search" class="form-control border-0 shadow-none"
+                        placeholder="Nama Jenis Barang..." />
+                </div>
+            </div>
+        </Navbar>
 
         <div class="content-wrapper">
 
@@ -123,8 +131,8 @@ export default {
     },
     setup() {
         const headers = [
-            { text: "Name Jenis Barang", value: "name", sortable: true },
-            { text: "Urutan", value: "order", sortable: true },
+            { text: "Name Jenis Barang", value: "name", },
+            { text: "Urutan", value: "order", },
             { text: "Aksi", value: "action" }
         ];
 
@@ -172,6 +180,9 @@ export default {
         editItemType,
         getItemTypeById,
         destroy,
+        search() {
+            this.loadData();
+        },
         async deleteItemType(itemTypeId) {
             const response = await this.destroy(this.endpoint, itemTypeId);
             if (response.data.success)
@@ -248,7 +259,9 @@ export default {
         },
         async loadData() {
             this.loading = true;
-            const response = await this.getItemTypes(this.endpoint, {}, this.serverOptions);
+            const response = await this.getItemTypes(this.endpoint, {
+                keyword: this.inputs.keyword
+            }, this.serverOptions);
             this.data.itemTypes = response.items;
             this.data.itemsLength = response.itemsLength;
             this.loading = false;

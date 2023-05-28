@@ -1,7 +1,15 @@
 <template>
     <div class="layout-page">
 
-        <Navbar />
+        <Navbar>
+            <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search fs-4 lh-0"></i>
+                    <input type="text" v-model="inputs.keyword" @input="search" class="form-control border-0 shadow-none"
+                        placeholder="Nama Barang..." />
+                </div>
+            </div>
+        </Navbar>
 
         <div class="content-wrapper">
 
@@ -34,7 +42,7 @@
                         <template #item-price_sell="itemOut">
                             {{ numberWithDot(itemOut.price_sell) }}
                         </template>
-                        
+
                         <template #item-action="itemOut">
                             <div class="d-flex gap-2">
                                 <button @click="editItemOut(itemOut, itemOut.id)" class="btn btn-warning btn-sm">
@@ -109,11 +117,11 @@ export default {
     },
     setup() {
         const headers = [
-            { text: "Tanggal", value: "out_date",},
-            { text: "Jenis Barang", value: "item_type",},
-            { text: "Nama Barang", value: "item_name",},
-            { text: "Harga Jual", value: "price_sell",},
-            { text: "Jumlah", value: "count",},
+            { text: "Tanggal", value: "out_date", },
+            { text: "Jenis Barang", value: "item_type", },
+            { text: "Nama Barang", value: "item_name", },
+            { text: "Harga Jual", value: "price_sell", },
+            { text: "Jumlah", value: "count", },
             { text: "Aksi", value: "action" }
         ];
 
@@ -155,6 +163,9 @@ export default {
         },
         getItemOut,
         destroy,
+        search() {
+            this.loadData();
+        },
         pushToast(status, message) {
             this.$emit('pushToast', status, message);
         },
@@ -177,7 +188,11 @@ export default {
         },
         async loadData() {
             this.loading = true;
-            const response = await this.getItemOut(this.endpoint, {}, this.serverOptions);
+            const response = await this.getItemOut(
+                this.endpoint,
+                { keyword: this.inputs.keyword },
+                this.serverOptions
+            );
             this.data.itemOut = response.items;
             this.data.itemsLength = response.itemsLength;
             this.loading = false;

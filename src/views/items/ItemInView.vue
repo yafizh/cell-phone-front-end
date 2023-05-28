@@ -1,7 +1,15 @@
 <template>
     <div class="layout-page">
 
-        <Navbar />
+        <Navbar>
+            <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search fs-4 lh-0"></i>
+                    <input type="text" v-model="inputs.keyword" @input="search" class="form-control border-0 shadow-none"
+                        placeholder="Nama Barang..." />
+                </div>
+            </div>
+        </Navbar>
 
         <div class="content-wrapper">
 
@@ -106,11 +114,11 @@ export default {
     },
     setup() {
         const headers = [
-            { text: "Tanggal", value: "in_date",},
-            { text: "Jenis Barang", value: "item_type",},
-            { text: "Nama Barang", value: "item_name",},
-            { text: "Harga Modal", value: "price_buy",},
-            { text: "Jumlah", value: "count",},
+            { text: "Tanggal", value: "in_date", },
+            { text: "Jenis Barang", value: "item_type", },
+            { text: "Nama Barang", value: "item_name", },
+            { text: "Harga Modal", value: "price_buy", },
+            { text: "Jumlah", value: "count", },
             { text: "Aksi", value: "action" }
         ];
 
@@ -145,13 +153,16 @@ export default {
         ...dataTableMethods,
         numberWithDot,
         bodyItemClass(column, index) {
-            if (['index', 'in_date', 'item_type', 'name', 'count','price_buy'].includes(column)) return 'text-center';
+            if (['index', 'in_date', 'item_type', 'name', 'count', 'price_buy'].includes(column)) return 'text-center';
         },
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';
         },
         pushToast(status, message) {
             this.$emit('pushToast', status, message);
+        },
+        search() {
+            this.loadData();
         },
         getItemIn,
         destroy,
@@ -174,7 +185,11 @@ export default {
         },
         async loadData() {
             this.loading = true;
-            const response = await this.getItemIn(this.endpoint, {}, this.serverOptions);
+            const response = await this.getItemIn(
+                this.endpoint,
+                { keyword: this.inputs.keyword },
+                this.serverOptions
+            );
             this.data.itemIn = response.items;
             this.data.itemsLength = response.itemsLength;
             this.loading = false;

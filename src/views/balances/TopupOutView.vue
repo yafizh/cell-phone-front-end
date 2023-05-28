@@ -1,7 +1,15 @@
 <template>
     <div class="layout-page">
 
-        <Navbar />
+        <Navbar>
+            <div class="navbar-nav align-items-center">
+                <div class="nav-item d-flex align-items-center">
+                    <i class="bx bx-search fs-4 lh-0"></i>
+                    <input type="text" v-model="inputs.keyword" @input="search" class="form-control border-0 shadow-none"
+                        placeholder="Nama Provider..." />
+                </div>
+            </div>
+        </Navbar>
 
         <div class="content-wrapper">
 
@@ -114,6 +122,7 @@ export default {
     setup() {
         const headers = [
             { text: "Tanggal", value: "out_date", },
+            { text: "Provider", value: "topup_name", },
             { text: "Saldo", value: "amount", },
             { text: "Harga Jual", value: "price_sell", },
             { text: "Aksi", value: "action" }
@@ -151,13 +160,16 @@ export default {
         ...dataTableMethods,
         numberWithDot,
         bodyItemClass(column, index) {
-            if (['index', 'out_date', 'price_sell', 'amount'].includes(column)) return 'text-center';
+            if (['index', 'out_date', 'price_sell', 'topup_name', 'amount', 'credit_name'].includes(column)) return 'text-center';
         },
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';
         },
         getTopupOut,
         destroy,
+        search() {
+            this.loadData();
+        },
         pushToast(status, message) {
             this.$emit('pushToast', status, message);
         },
@@ -187,7 +199,11 @@ export default {
         },
         async loadData() {
             this.loading = true;
-            const response = await this.getTopupOut(this.endpoint, {}, this.serverOptions);
+            const response = await this.getTopupOut(
+                this.endpoint,
+                { keyword: this.inputs.keyword },
+                this.serverOptions
+            );
             this.data.topupOut = response.items;
             this.data.itemsLength = response.itemsLength;
             this.loading = false;

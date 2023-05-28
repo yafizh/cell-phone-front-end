@@ -30,7 +30,7 @@
                         :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
                         header-text-direction="center" hide-footer ref="dataTable" :search-value="inputs.keyword">
 
-                        <template #item-price_sell="balanceIn">
+                        <template #item-price_buy="balanceIn">
                             {{ numberWithDot(balanceIn.price_buy) }}
                         </template>
 
