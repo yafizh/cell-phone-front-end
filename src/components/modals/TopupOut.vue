@@ -13,17 +13,17 @@
                             <input type="text" v-model="data.name" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Harga Jual</label>
-                            <select v-model="inputs.priceSell" @change="setAmount($event)" class="form-control" required>
-                                <option :value="topupPrice.price" v-for="topupPrice in data.topupPrices"
+                            <label class="form-label">Saldo</label>
+                            <select v-model="inputs.amount" @change="setPrice" class="form-control" required>
+                                <option :value="topupPrice.amount" v-for="topupPrice in data.topupPrices"
                                     :key="topupPrice.id">
-                                    {{ topupPrice.price }}
+                                    {{ numberWithDot(topupPrice.amount) }}
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Saldo</label>
-                            <input type="number" v-model="inputs.amount" class="form-control" disabled>
+                            <label class="form-label">Harga Jual</label>
+                            <input type="text" :value="numberWithDot(inputs.priceSell)" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             <button @click.prevent="submit" class="btn btn-primary float-end">Submit</button>
@@ -41,6 +41,9 @@ import { Modal } from 'bootstrap';
 import addTopupOut from '@/methods/api/store';
 import editTopupOut from '@/methods/api/update';
 import getTopupOutById from '@/methods/api/show';
+
+// Methods
+import numberWithDot from '@/methods/number/formatter';
 
 export default {
     props: ['name', 'topupPrices', 'toastStatus'],
@@ -62,12 +65,13 @@ export default {
         }
     },
     methods: {
-        setAmount(event) {
-            this.inputs.amount = this.data.topupPrices[event.target.selectedIndex].amount;
-        },
+        numberWithDot,
         addTopupOut,
         editTopupOut,
         getTopupOutById,
+        setPrice(event) {
+            this.inputs.priceSell = this.data.topupPrices[event.target.selectedIndex].price;
+        },
         openModal(topup, topupPrices, topupOutId = null) {
             this.data.topupPrices = topupPrices;
             if (topupOutId) {

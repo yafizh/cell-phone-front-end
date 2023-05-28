@@ -3,7 +3,7 @@
         <div class="layout-container">
             <Sidebar />
             <router-view @pushToast="pushToast" :toastStatus="toastStatus" />
-            <div class="toast-container position-fixed top-0 end-0 p-2" style="z-index: 9;">
+            <div class="toast-container position-fixed top-0 end-0 p-2" style="z-index: 999999;">
                 <div v-for="toast in toasts">
                     <div class="toast align-items-center border-0 show" role="alert" aria-live="assertive"
                         aria-atomic="true"

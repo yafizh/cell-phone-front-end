@@ -29,6 +29,10 @@
                         :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
                         header-text-direction="center" hide-footer ref="dataTable" :search-value="inputs.keyword">
 
+                        <template #item-price_buy="itemIn">
+                            {{ numberWithDot(itemIn.price_buy) }}
+                        </template>
+
                         <template #item-action="itemIn">
                             <div class="d-flex gap-2">
                                 <button @click="editItemIn(itemIn, itemIn.id)" class="btn btn-warning btn-sm">
@@ -90,6 +94,9 @@ import destroy from '@/methods/api/destroy';
 import dataTableComputedProperties from "@/plugins/vue3_easy_data_table/computed";
 import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
+// Methods
+import numberWithDot from "@/methods/number/formatter";
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast"],
@@ -99,11 +106,11 @@ export default {
     },
     setup() {
         const headers = [
-            { text: "Tanggal", value: "in_date", sortable: true },
-            { text: "Jenis Barang", value: "item_type", sortable: true },
-            { text: "Nama Barang", value: "item_name", sortable: true },
-            { text: "Harga Modal", value: "price_buy", sortable: true },
-            { text: "Jumlah", value: "count", sortable: true },
+            { text: "Tanggal", value: "in_date",},
+            { text: "Jenis Barang", value: "item_type",},
+            { text: "Nama Barang", value: "item_name",},
+            { text: "Harga Modal", value: "price_buy",},
+            { text: "Jumlah", value: "count",},
             { text: "Aksi", value: "action" }
         ];
 
@@ -136,9 +143,9 @@ export default {
     },
     methods: {
         ...dataTableMethods,
+        numberWithDot,
         bodyItemClass(column, index) {
-            if (['price_buy'].includes(column)) return 'text-end';
-            if (['index', 'in_date', 'item_type', 'name', 'count'].includes(column)) return 'text-center';
+            if (['index', 'in_date', 'item_type', 'name', 'count','price_buy'].includes(column)) return 'text-center';
         },
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';

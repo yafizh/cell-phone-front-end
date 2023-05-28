@@ -30,6 +30,14 @@
                         :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
                         header-text-direction="center" hide-footer ref="dataTable" :search-value="inputs.keyword">
 
+                        <template #item-price_sell="balanceIn">
+                            {{ numberWithDot(balanceIn.price_buy) }}
+                        </template>
+
+                        <template #item-amount="balanceIn">
+                            {{ numberWithDot(balanceIn.amount) }}
+                        </template>
+
                         <template #item-action="balanceIn">
                             <div class="d-flex gap-2">
                                 <button @click="editBalanceIn(balanceIn)" class="btn btn-warning btn-sm">
@@ -92,6 +100,9 @@ import destroy from '@/methods/api/destroy';
 import dataTableComputedProperties from "@/plugins/vue3_easy_data_table/computed";
 import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast"],
@@ -101,9 +112,9 @@ export default {
     },
     setup() {
         const headers = [
-            { text: "Tanggal", value: "in_date", sortable: true },
-            { text: "Harga Modal", value: "price_buy", sortable: true },
-            { text: "Jumlah", value: "amount", sortable: true },
+            { text: "Tanggal", value: "in_date", },
+            { text: "Saldo", value: "amount", },
+            { text: "Harga Modal", value: "price_buy", },
             { text: "Aksi", value: "action" }
         ];
 
@@ -136,9 +147,9 @@ export default {
     },
     methods: {
         ...dataTableMethods,
+        numberWithDot,
         bodyItemClass(column, index) {
-            if (['price_buy', 'amount'].includes(column)) return 'text-end';
-            if (['index', 'in_date'].includes(column)) return 'text-center';
+            if (['index', 'in_date', 'price_buy', 'amount'].includes(column)) return 'text-center';
         },
         headerItemClass(column, index) {
             if (['index', 'action'].includes(column.value)) return 'td-fit';

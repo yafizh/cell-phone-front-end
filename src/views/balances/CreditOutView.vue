@@ -31,6 +31,14 @@
                         :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
                         header-text-direction="center" hide-footer ref="dataTable" :search-value="inputs.keyword">
 
+                        <template #item-price_sell="creditOut">
+                            {{ numberWithDot(creditOut.price_sell) }}
+                        </template>
+
+                        <template #item-amount="creditOut">
+                            {{ numberWithDot(creditOut.amount) }}
+                        </template>
+
                         <template #item-action="creditOut">
                             <div class="d-flex gap-2">
                                 <button @click="editCreditOut(creditOut, creditOut.credit_prices, creditOut.id)"
@@ -94,6 +102,9 @@ import destroy from '@/methods/api/destroy';
 import dataTableComputedProperties from "@/plugins/vue3_easy_data_table/computed";
 import dataTableMethods from "@/plugins/vue3_easy_data_table/methods";
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast"],
@@ -103,9 +114,9 @@ export default {
     },
     setup() {
         const headers = [
-            { text: "Tanggal", value: "out_date", sortable: true },
-            { text: "Harga Jual", value: "price_sell", sortable: true },
-            { text: "Jumlah", value: "amount", sortable: true },
+            { text: "Tanggal", value: "out_date", },
+            { text: "Saldo", value: "amount", },
+            { text: "Harga Jual", value: "price_sell", },
             { text: "Aksi", value: "action" }
         ];
 
@@ -139,6 +150,7 @@ export default {
     },
     methods: {
         ...dataTableMethods,
+        numberWithDot,
         bodyItemClass(column, index) {
             if (['index', 'out_date', 'price_sell', 'amount'].includes(column)) return 'text-center';
         },

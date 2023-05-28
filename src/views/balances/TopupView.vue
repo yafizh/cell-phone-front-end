@@ -19,7 +19,7 @@
                 v-for="(value, index) in topup.data.topups" :key="topup.id">
                 <div class="row">
                     <div class="col-12 d-flex justify-content-end gap-2">
-                        <button class="btn btn-success btn-sm"
+                        <button class="btn btn-primary btn-sm"
                             @click="topupOut(value, topupPrice.data.topupPrices[value.id])">
                             Saldo Keluar
                         </button>
@@ -50,8 +50,8 @@
                         <tbody class="table-border-bottom-0">
                             <tr v-for="valueTopupPrice in topupPrice.data.topupPrices[value.id]"
                                 v-if="topup.data.topups.length">
-                                <td class="text-center">{{ valueTopupPrice.amount }}</td>
-                                <td class="text-center">{{ valueTopupPrice.price }}</td>
+                                <td class="text-center">{{ numberWithDot(valueTopupPrice.amount) }}</td>
+                                <td class="text-center">{{ numberWithDot(valueTopupPrice.price) }}</td>
                                 <td class="text-center td-fit">
                                     <div class="d-flex gap-2">
                                         <button class="btn btn-warning btn-sm"
@@ -99,15 +99,15 @@
             <form>
                 <div class="mb-3">
                     <label class="form-label">Saldo</label>
-                    <input type="number" v-model="topupPrice.inputs.amount" class="form-control" required min="0">
+                    <input type="text" @keydown.prevent="inputAmount" :value="amount" class="form-control" required min="0">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Harga</label>
-                    <input type="number" v-model="topupPrice.inputs.price" class="form-control" required min="0">
+                    <input ref="price" type="text" @keydown.prevent="inputPrice" :value="price" class="form-control" required min="0">
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Urutan</label>
-                    <input type="number" v-model="topupPrice.inputs.order" class="form-control" required min="1">
+                    <input ref="order" type="number" v-model="topupPrice.inputs.order" class="form-control" required min="1">
                 </div>
                 <div class="mb-3">
                     <button @click.prevent="submitForm(topupPrice.name)" class="btn btn-primary float-end">Submit</button>
@@ -129,6 +129,9 @@ import addData from '@/methods/api/store';
 import editData from '@/methods/api/update';
 import getDataById from '@/methods/api/show';
 import destroy from '@/methods/api/destroy';
+
+// Methods
+import numberWithDot from '@/methods/number/formatter';
 
 import { Modal } from 'bootstrap';
 export default {
@@ -170,12 +173,73 @@ export default {
             },
         }
     },
+    computed: {
+        price(){
+            return this.numberWithDot(this.topupPrice.inputs.price);
+        },
+        amount(){
+            return this.numberWithDot(this.topupPrice.inputs.amount);
+        }
+    },
     methods: {
+        numberWithDot,
         getData,
         addData,
         editData,
         getDataById,
         destroy,
+        inputAmount(event) {
+            if(event.which == 9) {
+                this.$refs.price.focus();
+                return;
+            }
+
+            if(event.which == 13){
+                this.submitForm(this.topupPrice.name);
+                return;
+            }
+
+            if (event.which == 8) {
+                this.topupPrice.inputs.amount =
+                    this.topupPrice.inputs.amount.toString().substring(
+                        0,
+                        this.topupPrice.inputs.amount.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57) {
+                return;
+            }
+
+            this.topupPrice.inputs.amount += event.key;
+        },
+        inputPrice(event) {
+            if(event.which == 9) {
+                this.$refs.order.focus();
+                return;
+            }
+
+            if(event.which == 13){
+                this.submitForm(this.topupPrice.name);
+                return;
+            }
+
+            if (event.which == 8) {
+                this.topupPrice.inputs.price =
+                    this.topupPrice.inputs.price.toString().substring(
+                        0,
+                        this.topupPrice.inputs.price.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57) {
+                return;
+            }
+
+            this.topupPrice.inputs.price += event.key;
+        },
         pushToast(status, message) {
             this.$emit('pushToast', status, message);
         },

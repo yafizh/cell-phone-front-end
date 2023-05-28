@@ -18,11 +18,12 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Harga Jual</label>
-                            <input type="number" v-model="inputs.priceSell" class="form-control" required>
+                            <input type="text" @keydown.prevent="inputPriceSell" :value="priceSell" class="form-control"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Jumlah</label>
-                            <input type="number" v-model="inputs.count" class="form-control" required>
+                            <input ref="count" type="number" min="1" v-model="inputs.count" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <button @click.prevent="submit" class="btn btn-primary float-end">Submit</button>
@@ -41,6 +42,9 @@ import addItemOut from '@/methods/api/store';
 import editItemOut from '@/methods/api/update';
 import getItemOutById from '@/methods/api/show';
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast"],
@@ -54,19 +58,49 @@ export default {
                 name: '',
             },
             inputs: {
-                priceSell: 0,
-                count: 0,
+                priceSell: '',
+                count: 1,
             },
             modal: null,
             endpoint: 'item-out'
         }
     },
+    computed: {
+        priceSell() {
+            return this.numberWithDot(this.inputs.priceSell);
+        },
+    },
     methods: {
+        numberWithDot,
         addItemOut,
         editItemOut,
         getItemOutById,
-        openModal(item, itemOutId = null) {
+        inputPriceSell(event) {
+            if(event.which == 9) {
+                this.$refs.count.focus();
+                return;
+            }
 
+            if(event.which == 13){
+                this.submit();
+                return;
+            }
+
+            if (event.which == 8) {
+                this.inputs.priceSell =
+                    this.inputs.priceSell.toString().substring(
+                        0,
+                        this.inputs.priceSell.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57)
+                return;
+
+            this.inputs.priceSell += event.key;
+        },
+        openModal(item, itemOutId = null) {
             if (itemOutId) {
                 this.data.itemOutId = itemOutId;
                 this.data.itemType = item.item_type;
@@ -132,7 +166,7 @@ export default {
             this.modal.hide();
         },
         hiddenBsModal() {
-            this.inputs.count = 0;
+            this.inputs.count = 1;
         }
     },
     mounted() {

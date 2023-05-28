@@ -13,17 +13,17 @@
                             <input type="text" v-model="data.name" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Harga Jual</label>
-                            <select v-model="inputs.priceSell" @change="setAmount($event)" class="form-control" required>
-                                <option :value="creditPrice.price" v-for="creditPrice in data.creditPrices"
+                            <label class="form-label">Saldo</label>
+                            <select v-model="inputs.amount" @change="setPrice" class="form-control" required>
+                                <option :value="creditPrice.amount" v-for="creditPrice in data.creditPrices"
                                     :key="creditPrice.id">
-                                    {{ creditPrice.price }}
+                                    {{ numberWithDot(creditPrice.amount) }}
                                 </option>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Saldo</label>
-                            <input type="number" v-model="inputs.amount" class="form-control" disabled>
+                            <label class="form-label">Harga Jual</label>
+                            <input type="text" :value="numberWithDot(inputs.priceSell)" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             <button @click.prevent="submit" class="btn btn-primary float-end">Submit</button>
@@ -41,6 +41,9 @@ import { Modal } from 'bootstrap';
 import addCreditOut from '@/methods/api/store';
 import editCreditOut from '@/methods/api/update';
 import getCreditOutById from '@/methods/api/show';
+
+// Methods
+import numberWithDot from '@/methods/number/formatter';
 
 export default {
     props: ['name', 'creditPrices', 'toastStatus'],
@@ -62,12 +65,13 @@ export default {
         }
     },
     methods: {
-        setAmount(event) {
-            this.inputs.amount = this.data.creditPrices[event.target.selectedIndex].amount;
-        },
+        numberWithDot,
         addCreditOut,
         editCreditOut,
         getCreditOutById,
+        setPrice(event) {
+            this.inputs.priceSell = this.data.creditPrices[event.target.selectedIndex].price;
+        },
         openModal(credit, creditPrices, creditOutId = null) {
             this.data.creditPrices = creditPrices;
             if (creditOutId) {
@@ -128,8 +132,6 @@ export default {
                     );
                 this.$emit('loadBalance');
             }
-
-            console.log(response)
 
             this.modal.hide();
         },

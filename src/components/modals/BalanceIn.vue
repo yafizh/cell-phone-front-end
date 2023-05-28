@@ -10,11 +10,11 @@
                     <form>
                         <div class="mb-3">
                             <label class="form-label">Harga Beli</label>
-                            <input type="number" v-model="inputs.priceBuy" class="form-control" required>
+                            <input type="text" @keydown.prevent="inputPriceBuy" :value="priceBuy" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Jumlah</label>
-                            <input type="number" v-model="inputs.amount" class="form-control" required>
+                            <input ref="amount" type="text" @keydown.prevent="inputAmount" :value="amount" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <button @click.prevent="submit" class="btn btn-primary float-end">Submit</button>
@@ -32,6 +32,9 @@ import { Modal } from 'bootstrap';
 import addBalanceIn from '@/methods/api/store';
 import editBalanceIn from '@/methods/api/update';
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast", 'loadData'],
@@ -48,9 +51,65 @@ export default {
             endpoint: 'balance-in'
         }
     },
+    computed: {
+        priceBuy() {
+            return this.numberWithDot(this.inputs.priceBuy);
+        },
+        amount() {
+            return this.numberWithDot(this.inputs.amount);
+        }
+    },
     methods: {
+        numberWithDot,
         addBalanceIn,
         editBalanceIn,
+        inputPriceBuy(event) {
+            if(event.which == 9) {
+                this.$refs.amount.focus();
+                return;
+            }
+
+            if(event.which == 13){
+                this.submit();
+                return;
+            }
+
+            if (event.which == 8) {
+                this.inputs.priceBuy =
+                    this.inputs.priceBuy.toString().substring(
+                        0,
+                        this.inputs.priceBuy.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57) {
+                return;
+            }
+
+            this.inputs.priceBuy += event.key;
+        },
+        inputAmount(event) {
+            if(event.which == 13){
+                this.submit();
+                return;
+            }
+
+            if (event.which == 8) {
+                this.inputs.amount =
+                    this.inputs.amount.toString().substring(
+                        0,
+                        this.inputs.amount.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57) {
+                return;
+            }
+
+            this.inputs.amount += event.key;
+        },
         openModal(balanceIn = null) {
             if (balanceIn) {
                 this.data.balanceInId = balanceIn.id;

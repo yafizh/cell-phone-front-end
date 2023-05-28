@@ -37,6 +37,9 @@ import ModalBalanceIn from '@/components/modals/BalanceIn.vue';
 // API
 import getBalance from '@/methods/api/index';
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast"],
@@ -57,11 +60,12 @@ export default {
     },
     computed: {
         formatedBalance() {
-            return this.data.balance;
+            return this.numberWithDot(this.data.balance);
         }
     },
     methods: {
         getBalance,
+        numberWithDot,
         pushToast(status, message) {
             this.$emit('pushToast', status, message);
         },

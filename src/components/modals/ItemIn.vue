@@ -18,11 +18,11 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Harga Beli</label>
-                            <input type="number" v-model="data.priceBuy" class="form-control" disabled>
+                            <input type="text" :value="priceBuy" class="form-control" disabled>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Jumlah</label>
-                            <input type="number" v-model="inputs.count" class="form-control" required>
+                            <input type="number" v-model="inputs.count" min="1" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <button @click.prevent="submit" class="btn btn-primary float-end">Submit</button>
@@ -41,6 +41,9 @@ import addItemIn from '@/methods/api/store';
 import editItemIn from '@/methods/api/update';
 import getItemInById from '@/methods/api/show';
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 export default {
     props: ['toastStatus'],
     emits: ["pushToast", "loadData"],
@@ -55,13 +58,19 @@ export default {
                 priceBuy: 0,
             },
             inputs: {
-                count: 0,
+                count: 1,
             },
             modal: null,
             endpoint: 'item-in'
         }
     },
+    computed: {
+        priceBuy() {
+            return this.numberWithDot(this.data.priceBuy);
+        },
+    },
     methods: {
+        numberWithDot,
         addItemIn,
         editItemIn,
         getItemInById,
@@ -130,7 +139,7 @@ export default {
             this.modal.hide();
         },
         hiddenBsModal() {
-            this.inputs.count = 0;
+            this.inputs.count = 1;
         }
     },
     mounted() {

@@ -32,12 +32,20 @@
                                             :body-item-class-name="bodyItemClass" :header-item-class-name="headerItemClass"
                                             header-text-direction="center" hide-footer ref="dataTable">
 
+                                            <template #item-price_buy="item">
+                                                {{ numberWithDot(item.price_buy) }}
+                                            </template>
+
+                                            <template #item-price_sell="item">
+                                                {{ numberWithDot(item.price_sell) }}
+                                            </template>
+
                                             <template #item-action="item">
                                                 <div class="d-flex gap-2 text-nowrap">
-                                                    <button @click="itemIn(item)" class="btn btn-info btn-sm">
+                                                    <button @click="itemIn(item)" class="btn btn-primary btn-sm">
                                                         Barang Masuk
                                                     </button>
-                                                    <button @click="itemOut(item)" class="btn btn-success btn-sm">
+                                                    <button @click="itemOut(item)" class="btn btn-primary btn-sm">
                                                         Barang Terjual
                                                     </button>
                                                     <button @click="formModal(item.id, item.item_type_id)"
@@ -83,14 +91,14 @@
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Harga Beli</label>
-                    <input type="number" v-model="inputs.price_buy" class="form-control" required>
+                    <input type="text" @keydown.prevent="inputPriceBuy" :value="priceBuy" class="form-control" required>
                 </div>
                 <div class="mb-3">
                     <label class="form-label">Harga Jual</label>
-                    <input type="number" v-model="inputs.price_sell" class="form-control" required>
+                    <input ref="priceSell" type="text" @keydown.prevent="inputPriceSell" :value="priceSell" class="form-control" required>
                 </div>
                 <div class="mb-3">
-                    <button @click.prevent="submitForm" class="btn btn-primary float-end">Submit</button>
+                    <button ref="submit" @click.prevent="submitForm" class="btn btn-primary float-end">Submit</button>
                 </div>
             </form>
         </template>
@@ -115,6 +123,9 @@ import editItem from '@/methods/api/update';
 import getItemById from '@/methods/api/show';
 import destroy from '@/methods/api/destroy';
 
+// Methods
+import numberWithDot from '@/methods/number/formatter';
+
 import { Modal } from 'bootstrap';
 export default {
     props: ['toastStatus'],
@@ -128,7 +139,7 @@ export default {
     setup() {
         const headers = [
             { text: "Nama", value: "name", sortable: true },
-            { text: "Harga Beli", value: "price_buy", sortable: true },
+            { text: "Harga Modal", value: "price_buy", sortable: true },
             { text: "Harga Jual", value: "price_sell", sortable: true },
             { text: "Stok", value: "stock", sortable: true },
             { text: "Aksi", value: "action" }
@@ -169,7 +180,62 @@ export default {
             isMounted: false,
         }
     },
+    computed: {
+        priceBuy() {
+            return this.numberWithDot(this.inputs.price_buy);
+        },
+        priceSell() {
+            return this.numberWithDot(this.inputs.price_sell);
+        }
+    },
     methods: {
+        inputPriceBuy(event) {
+            if(event.which == 9) {
+                this.$refs.priceSell.focus();
+                return;
+            }
+
+            if(event.which == 13){
+                this.submitForm();
+                return;
+            }
+
+            if (event.which == 8) {
+                this.inputs.price_buy =
+                    this.inputs.price_buy.toString().substring(
+                        0,
+                        this.inputs.price_buy.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57) {
+                return;
+            }
+
+            this.inputs.price_buy += event.key;
+        },
+        inputPriceSell(event) {
+            if(event.which == 13){
+                this.submitForm();
+                return;
+            }
+
+            if (event.which == 8) {
+                this.inputs.price_sell =
+                    this.inputs.price_sell.toString().substring(
+                        0,
+                        this.inputs.price_sell.toString().length - 1
+                    );
+                return;
+            }
+
+            if (event.which < 48 || event.which > 57)
+                return;
+
+            this.inputs.price_sell += event.key;
+        },
+        numberWithDot,
         bodyItemClass(column, index) {
             if (['index', 'name', 'price_sell', 'price_buy', 'stock'].includes(column)) return 'text-center';
         },
