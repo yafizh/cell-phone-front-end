@@ -4,7 +4,7 @@
 
 <script>
 // @ is an alias to /src
-import DashboardView from './views/DashboardView.vue'
+import DashboardView from '@/views/DashboardView.vue'
 
 export default {
   components: {

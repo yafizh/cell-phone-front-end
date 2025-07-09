@@ -3,7 +3,7 @@ import App from "./App.vue";
 import router from "./router";
 
 // Axios
-import axios from "./plugins/axios";
+import axios from "@/plugins/axios";
 import VueAxios from "vue-axios";
 
 import "@/assets/css/styles.css";
